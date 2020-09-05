@@ -37,10 +37,11 @@ SPECIALDIRS = {"FIGURE": ["build/figures/{}/".format(d) for d in
                "SCRIPT": ["script/"], "LIB" : ["lib/"], "SRC" : [""]}
 SPECIALS = {"THISFIGURE" : "%FIGURE%/{}.pdf", "THISMAT" : "{}.mat",
             "THISTEX" : "{}.tex", "THISGNUPLOT" : "{}.gnuplot",
-            "THISDAT" : "{}.dat", "THISPDF" : "{}.pdf"}
+            "THISDAT" : "{}.dat", "THISPDF" : "{}.pdf",
+            "THISPICKLE" : "{}.pickle"}
 
 # Define set for new-style [makes]; "[makes] *" gets mapped to "%THIS*%". 
-MAKES_SPECIALS = {"figure", "gnuplot", "mat", "dat", "tex", "pdf"}
+MAKES_SPECIALS = {"figure", "gnuplot", "mat", "dat", "tex", "pdf", "pickle"}
 
 # Set default [makes] based on file extensions.
 DEFAULT_MAKES = {".py": "figure", ".m": "mat", ".jl": "mat",
