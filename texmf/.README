@@ -1,0 +1,11 @@
+This folder is used for any special packages or style files to be used in the
+main document. When make is run, all files in this directory (except for this
+README) are symbolically linked to so that they can be found by pdflatex.
+
+We put these files in this subfolder because typically they won't change much
+after being added initially, and so they can be easily grabbed by make using
+a wildcard.
+
+Note that I have also decided to put any unsourced figures (i.e. pdfs without
+make rules, possibly stolen from my other presentations) here as well, since
+they should be handled basically exactly like these files.

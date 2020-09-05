@@ -1,0 +1,47 @@
+This repo is based on skeleton, which is a repo structure and Makefile written
+by Michael Risbeck <risbeck@wisc.edu>, available from Bitbucket via
+
+    git clone https://bitbucket.org/rawlings-group/skeleton
+
+It is basically a rewrite of the old Rawlings group makefile so that all of the
+intermediates get built in a subdirectory. This allows all the source files to
+be kept by themselves in a clean directory, and it also allows for easy rules
+in .gitignore.
+
+Before running anything, you should run `make install`. This will run an install
+script (via Python) to alert you of any other repositories or custom Python
+packages that are needed for the repo.
+
+To facilitate sharing, we have added the ability to quickly backup the .mat
+files (which may be time-consuming to reproduce). To do this, use the make
+target "matbackups", which will ensure all .mat files are up to date and then
+save a copy of them to matbackups. The intent is that these .mat files should be
+versioned so that, in a pinch, they can be used instead of having to rebuild. By
+default, backed-up copies are always used (which requires someone initially to
+make the files and then check them in to the repo). To build the mat files every
+time instead of using the backed-up versions, either run make using
+
+    make USE_MAT_BACKUPS=False
+
+or, if you always want to use this setting, create a file "Makefile.options" in
+the base directory and add the line
+
+    USE_MAT_BACKUPS=False
+
+which will always make data files instead of using backed up copies. Note that
+this will only work if someone else has already run `make matbackups` and
+added the files to the repos. Similar functionality is available for dia files
+to solve a shape portability issue.
+
+For plots using Python and Matplotlib, I've also written a module called
+plottools that helps fix a few things and provides some convenience functions.
+By default, the python script runmatplotlib.py tries to load this package and do
+some initialization. To get this, clone
+
+    hg clone https://bitbucket.org/risbeck/plottools
+
+and follow the installation instructions there.
+
+Note that since Make uses whitespace as a delimiter, you should avoid using
+spaces in filenames throughout this repo.
+

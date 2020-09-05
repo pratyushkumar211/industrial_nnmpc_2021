@@ -1,0 +1,14 @@
+This folder is for "library" code, i.e., Python or Octave code that is specific
+to the repo but is called multiple times. This is distinct from the script
+folder that contains build-related scripts that are the same for each repo. The
+main reason for breaking this out is so we can ignore *.pyc files here, and also
+to aid in autodependency generation.
+
+Note that each repo should have a custompath.py module here to allow users to
+specify any external code that may need to be called. Similarly, custompath.m
+provides this functionality to Octave/Matlab scripts.
+
+By default, this directory is added to the Octave and Python paths, while script
+is not. If you want some other behavior, then that needs to be hard-coded in the
+source files, or enforced by editing the makefile.
+

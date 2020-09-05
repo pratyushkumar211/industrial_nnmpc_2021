@@ -1,0 +1,8 @@
+This folder is for script files used during automated building. Individual repos
+should typically not have to add/change anything in this folder.
+
+Note that the scripts domatplotlib.py, dopython.py, and INSTALL.py are designed
+to be run via Python 2 or Python 3, as chosen with the PYTHON variable in the
+Makefile. The other scripts always run with Python 3 (and thus have execute
+permissions and a python3 shebang).
+
