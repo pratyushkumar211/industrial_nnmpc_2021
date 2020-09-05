@@ -975,9 +975,11 @@ d) Unstructured NN (NN-UNS): a standard feedforward network is
 trained with the triple ($x, x_s, u_s$) as the input
 and then used as the feedback controller online.
 
-To gauge the performance of NNs in 
-the validation simulations, and the offline
-computational effort required to build the NNs, 
+To gauge the performance of the NNs in 
+the validation simulations, computational 
+speedups over online QP based MPC, the offline
+computational effort required to build the NNs,
+and the memory required for the deployment of NNs,  
 the following metrics are examined:
 
 \begin{itemize}
@@ -1168,7 +1170,7 @@ shown in Table \ref{table:cstrs_pars}.
 \end{table}
 
 A linear discrete time model with the chosen sample time
-is obtained at the steady state shown in the table 
+is obtained at the steady state shown in the Table 
 \ref{table:cstrs_pars}.
 This model, inputs and outputs are scaled 
 for the MPC controller such that
@@ -1190,7 +1192,7 @@ has three hidden layers with
 448 (NN-3-448), 480 (NN-3-480), 
 512 (NN-3-512), and 544 (NN-3-544) 
 nodes in each hidden 
-layer respectively. For validation simulations, 
+layer respectively. For the validation simulations, 
 setpoint and disturbance signals 
 with 24 setpoint changes and 48 disturbance changes 
 is generated for 4320 timesteps (12 hours). 
@@ -1198,12 +1200,13 @@ The short horizon MPC controller is constructed with a
 horizon length of $N = 10$, and the architecture 
 of the unstructured NN considered 
 is three hidden layers with 224 nodes in each hidden layer. 
-An additional scaling of $x$ and $x_s$ is performed for the 
+An additional scaling of the 
+states and target steady states ($x$ , $x_s$) is performed for the 
 NN training as $x := 2x/(x_{\textnormal{max}} - x_{\textnormal{min}})$ and 
 $x_s := 2x_s/(x_{\textnormal{max}} - x_{\textnormal{min}})$,
 in which $x_{\textnormal{max}}$ and $x_{\textnormal{min}}$
 are the maximum and minimum values of the state 
-observed in the training data.
+observed in the generated training data.
 This scaling is also performed in real-time 
 when the NN is used to compute the actuator move.
 
@@ -1290,15 +1293,16 @@ and optimal MPC controllers for the full
 simulation period of 12 hours. The closed-loop 
 performance obtained using NNs is almost same as the optimal MPC 
 controller and the degradation in the performance 
-is quantified with the $\%$ performance loss metric.
+is quantified with the $\%$ performance loss metric
+shown in the Table \ref{table:cstrs}.
 
 Third, the online computational benefits of NNs 
 over the QP based MPC is analyzed. The Figure 
 \ref{fig:cstrs_statistics} (top right)
 shows a histogram of online computation times
-of the NNs and QP solver in the above validation
-simulation. The average and worst-case speedups
-obtained using NNs are summarized in the 
+of the NNs and the QP solver 
+CVXOPT. The average and worst-case speedups
+obtained using the NNs are summarized in the 
 Table \ref{table:cstrs}. The QP solver takes 
 about 9 to 14 seconds in this example and all the 
 NNs compute the control in just 0.4 to 3 milliseconds, 
@@ -1306,9 +1310,11 @@ and are conveniently deployable in the
 sample time of 10 seconds.
 
 The $\%$ performance loss 
-obtained using the four heuristic controllers, 
-their corresponding speedups, time required to 
-train each NN, number of parameters in each NN, 
+obtained using the four fast controllers other 
+than the structured NNs, 
+their corresponding 
+computational speedups, the maximum time required to 
+train each NN, the number of parameters in each NN, 
 and the memory required to store  
 the weights of each NN is summarized in the 
 Table \ref{table:cstrs}. The $\%$ performance loss 
@@ -1319,9 +1325,10 @@ for an industrial application.
 This noticeable performance improvement with the
 structured NNs is because the control law 
 is exactly the same as the optimal feedback law
-at steady states, and the training process improves the 
-approximation of the optimal feedback law
-by the NN only for the transient states. 
+at the steady states, and that simplifies
+the optimal feedback law approximation problem
+since the training process only has to improve the 
+NN control law for the transient states. 
 
 \subsection{Large-scale crude distillation unit}
 
@@ -1363,7 +1370,7 @@ The states and target steady states
 similar to the previous example.
 
 The Figure \ref{fig:cdu_statistics} shows the 
-statistics for the simulation study performed for this 
+statistics obtained in the simulation study performed for this 
 example. The data requirements to obtain 
 an accurate NN controller is shown in top left.
 The transient controller performance index 
@@ -1372,16 +1379,17 @@ obtained with the four structured NNs,
 satK, and MPC controllers is shown in center bottom.
 The top right plot shows the 
 histogram of online computation times 
-of the NNs and QP solver.
+of the NNs and the QP solver CVXOPT.
 The Table \ref{table:cdu} gives a summary of 
-the maximum time required to train the NNs, number of parameters
-in each NN, memory footprint of the NNs, and 
-the $\%$ performance loss metric obtained by 
+the maximum time required to train the NNs, 
+the number of parameters
+in each NN, the memory footprint of the NNs, and 
+the $\%$ performance loss obtained by 
 the structured NNs, SS, satK, and SH 
 controllers in the validation simulations. 
 
 The offline data generation and training times 
-for the NNs shows that this large-scale example
+to build the NNs show that this large dimensional example
 is tractable with the proposed NN approach.
 This large example is challenging, 
 since on average the QP solver CVXOPT takes 37 seconds
@@ -1389,12 +1397,13 @@ and 57 seconds in the worst-case. In comparison,
 all the NNs execute MPC in about 2 to 6 milliseconds.
 As observed from the plot of the transient controller 
 performance index, the performance 
-degradation by the NNs compared with 
+degradation by the NNs relative to 
 the optimal MPC controller is negligible.
-The sampling of the state-space for NN training
-for one particular operational scenario 
-with the corresponding setpoint and disturbance signals 
-is the rule to obtain scalability of the NN controllers. 
+The sampling of the state-space with 
+the setpoint and disturbance signals
+for one particular operational scenario,
+combined with the offset-free NN structure
+are key steps for scalability in this example. 
 
 \section{Conclusion} \label{sec:conclusion}
 Neural networks have been demonstrated 
@@ -1402,29 +1411,32 @@ to approximate the MPC feedback law
 for treating large-scale, linear MPC applications
 that may be challeging with QP solvers. 
 The proposed no online optimization-based
-methods in the literature such as storing 
+methods to-date in the literature such as storing 
 the entire MPC feedback law 
 and sampling the large dimensional state-space 
 for the NN training are not tractable for the size of problems 
 considered in this article.
 
-The key features for scalability of the proposed approach 
+The key features for the scalability of the proposed approach 
 are the structure of NN and data generation for only the
 typical plant operational scenarios. 
-The NN design approach was demonstrated to scale on a
+The NN design approach was demonstrated to scale on an
 industrial crude distillation unit model with state and
 control dimensions of 252 and 32 respectively, and 
 a control-sample horizon length of 145 in the QP. 
-Parallel computing was used for the data 
-generation and graphical processing units for the NN 
-training. After the offline design phase, NNs execute MPC 
+After the offline design phase, NNs execute MPC 
 about three to five orders of magnitude faster than an 
 available QP solver 
 with less than 1$\%$ performance degradation in the closed-loop. 
-The NNs are easily deployable on memory constrained hardware.
-Robustness properties
-of NNs were established under bounded approximation errors of the optimal 
-feedback law, that provides some theoretical support 
+Parallel computing can be used for the data generation step
+if solving QPs for each sampled state starts to take long 
+amounts of time.
+After the training process, 
+the NNs are easily deployable on memory constrained hardware.
+We established conditions under which the 
+NN controllers are robust to state estimation errors 
+and process disturbances,
+that provides some theoretical support 
 to practitioners interested in the deployment of NNs. 
 
 As larger and wide range of
