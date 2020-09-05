@@ -40,7 +40,7 @@ TEXSUFFIXES := .pdf .aux .log .bbl .blg .nav .out .snm .toc .synctex.gz \
 # we are making the article or the talk. Note that the nomenclature is kind of
 # confusing here: in the subfolders, we split paper/presentation/poster, whereas
 # these variables are article/talk/poster, so keep that in mind.
-ARTICLE_SRC := paper.tex resultssummary.tex nnrobustness.tex
+ARTICLE_SRC := paper.tex
 TALK_SRC := 
 POSTER_SRC := 
 
@@ -101,9 +101,7 @@ DIA_SRC := cstrs_with_flash.dia cdu.dia
 PY_MAT_SRC :=
 OCT_MAT_SRC := 
 MATLAB_MAT_SRC := 
-PY_PICKLE_SRC := di_parameters.py di_mpc.py di_us.py di_satdlqr.py \
-                 di_short_horizon.py di_train.py di_neural_network.py \
-				 cstrs_parameters.py cstrs_mpc.py cstrs_us.py cstrs_satdlqr.py \
+PY_PICKLE_SRC := cstrs_parameters.py cstrs_mpc.py cstrs_us.py cstrs_satdlqr.py \
                  cstrs_short_horizon.py cstrs_train.py cstrs_neural_network.py \
 				 cdu_parameters.py cdu_mpc.py cdu_us.py cdu_satdlqr.py \
 				 cdu_short_horizon.py cdu_train.py cdu_neural_network.py
@@ -121,8 +119,7 @@ OCT_DAT_SRC :=
 
 ## PY_PLOT files are .py files that create .pdf plots.
 
-PY_PLOT := di_comparision_plots.py cstrs_comparision_plots.py \
-		   cdu_comparision_plots.py
+PY_PLOT := cstrs_comparision_plots.py cdu_comparision_plots.py
 
 ## PY_MOVIE files are .py files that create movies as a .pdf document.
 
