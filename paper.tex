@@ -1058,7 +1058,7 @@ from the product $B$. The $A$ rich vapor phase
 is recycled back to the first CSTR. 
 The plant is simulated using the set of 
 nonlinear ordinary differential equations (ODEs) available in 
-\cite*{stewart:venkat:rawlings:wright:pannocchia:2010}.
+\cite*{venkat:2006}, Appendix.
 The model has 12 states 
 ($H_r, x_{Ar}, x_{Br}, T_r, 
 H_m, x_{Am}, x_{Bm}, T_m, H_b, x_{Ab}, x_{Bb}, T_b$),
@@ -1398,10 +1398,10 @@ is the rule to obtain scalability of the NN controllers.
 
 \section{Conclusion} \label{sec:conclusion}
 Neural networks have been demonstrated 
-to approximate the MPC feedback law 
+to approximate the MPC feedback law
 for treating large-scale, linear MPC applications
 that may be challeging with QP solvers. 
-The proposed no online optimization-based 
+The proposed no online optimization-based
 methods in the literature such as storing 
 the entire MPC feedback law 
 and sampling the large dimensional state-space 
@@ -1409,7 +1409,7 @@ for the NN training are not tractable for the size of problems
 considered in this article.
 
 The key features for scalability of the proposed approach 
-are the structure of NN and data generation for only the 
+are the structure of NN and data generation for only the
 typical plant operational scenarios. 
 The NN design approach was demonstrated to scale on a
 industrial crude distillation unit model with state and
@@ -1436,12 +1436,14 @@ provides a new method to address MPC applications.
 The authors would like to acknowledge the industrial
 members of the Texas-Wisconsin-California Control (TWCCC)
 consortium for funding support.
-The computational facilities purchased with funds from the National Science Foundation (CNS-1725797) and administered by the Center for Scientific Computing (CSC) was used for the simulation 
+The computational facilities purchased with funds from the National Science Foundation (CNS-1725797) 
+and administered by the Center for Scientific Computing (CSC) was used for the simulation 
 studies presented in this article. 
-The CSC is supported by the California NanoSystems Institute and the Materials Research Science and Engineering Center 
+The CSC is supported by the California NanoSystems 
+Institute and the Materials Research Science and Engineering Center 
 (MRSEC; NSF DMR 1720256) at UC Santa Barbara.
 
 %% New version of the num-names style
 \bibliographystyle{elsarticle-num-names}
-\bibliography{abbreviations,articles,books,unpub,proceedings}
+\bibliography{articles,books,unpub,proceedings}
 \end{document}
