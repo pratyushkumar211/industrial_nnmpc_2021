@@ -119,7 +119,7 @@ OCT_DAT_SRC :=
 
 ## PY_PLOT files are .py files that create .pdf plots.
 
-PY_PLOT := cstrs_comparision_plots.py cdu_comparision_plots.py
+PY_PLOT := 
 
 ## PY_MOVIE files are .py files that create movies as a .pdf document.
 
