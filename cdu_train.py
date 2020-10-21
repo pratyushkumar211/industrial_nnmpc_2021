@@ -1,3 +1,6 @@
+# [depends] %LIB%/LinearMPCLayers.py
+# [depends] %LIB%/controller_evaluation.py
+# [depends] %LIB%/python_utils.py
 # [makes] pickle
 """
 Script to train the neural network controller for the 
@@ -7,7 +10,7 @@ Pratyush Kumar, pratyushkumar@ucsb.edu
 import os
 import sys
 import numpy as np
-sys.path.append('lib/')
+sys.path.append('../lib/')
 import time
 import itertools
 import tensorflow as tf
@@ -37,7 +40,7 @@ def train_nn_controller(nn_controller, data,
                         stdout_filename, ckpt_path):
     """ Function to train the NN controller."""
     # Std out.
-    sys.stdout = open(stdout_filename, 'w')
+    sys.stdout = open(stdout_filename, 'a')
     # Create the checkpoint callback.
     checkpoint_callback = tf.keras.callbacks.ModelCheckpoint(filepath=ckpt_path,
                                                     monitor='val_loss',
@@ -49,9 +52,9 @@ def train_nn_controller(nn_controller, data,
     tstart = time.time()
     nn_controller.fit(x=[data['x'], data['xs'], data['us']], 
                       y=[data['u']], 
-                      epochs=500,
+                      epochs=1500,
                       batch_size=2048,
-                      validation_split=0.1,
+                      validation_split=0.05,
                       callbacks = [checkpoint_callback])
     tend = time.time()
     training_time = tend - tstart
@@ -61,16 +64,20 @@ def train_nn_controller(nn_controller, data,
 # Get the raw data for training.
 raw_data = H5pyTool.load_training_data(filename='cdu_offline_data.h5py')
 (scaled_data, xscale) = _get_data_for_training(data=raw_data, 
-                                           num_samples=120000, 
+                                           num_samples=357600, 
                                            scale=True)
 
 # Arrange the number of samples and the dimensions of the NN controller.
-num_samples = [num_sample for num_sample in range(24000, 120001, 24000)]
+num_samples = [20000]
+num_samples += [num_sample for num_sample in range(30000, 330001, 30000)]
+num_samples += [357600]
 data_generation_times = []
 training_times = []
 memory_footprints = []
-regulator_dims = [[536, 160, 160, 32], [536, 192, 192, 32],
-                  [536, 224, 224, 32], [536, 256, 256, 32]]
+regulator_dims = [[536, 832, 832, 832, 32],
+                  [536, 896, 896, 896, 32],
+                  [536, 960, 960, 960, 32],
+                  [536, 1024, 1024, 1024, 32]]
 trained_regulator_weights = []
 
 # Take input from the user about which architecture to train.

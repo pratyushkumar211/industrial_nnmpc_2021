@@ -1,6 +1,9 @@
 # [depends] cdu_parameters.pickle cdu_mpc.pickle cdu_us.pickle
 # [depends] cdu_satdlqr.pickle cdu_short_horizon.pickle cdu_train.pickle
 # [depends] cdu_neural_network.pickle
+# [depends] %LIB%/python_utils.py
+# [depends] %LIB%/cdu_labels.py
+# [depends] %LIB%/controller_evaluation.py
 """
 Script to run an on-line simulation using the double integrator example
 using the optimal MPC controller.
@@ -17,7 +20,7 @@ import numpy as np
 import itertools
 import matplotlib.pyplot as plt
 from cdu_labels import (ulabels, zlabels, ylabels, pdlabels)
-from python_utils import (PickleTool, figure_size_cl, 
+from python_utils import (PickleTool, figure_size_cl,
                          figure_size_a4, figure_size_metrics)
 from matplotlib.backends.backend_pdf import PdfPages
 from controller_evaluation import (plot_cl_performance_and_comp_times,
@@ -261,7 +264,7 @@ def main():
     """ Run these commands when this script is called."""
 
     # Set the fontize.
-    _set_font_size(paper_fontsize=14)
+    _set_font_size(paper_fontsize=16)
 
     # Get the parameters and the plant object which has the closed-loop data
     # for the two controllers.
@@ -317,8 +320,8 @@ def main():
                                              num_samples, 
                                              nn_labels,
                                              figure_size_metrics,
-                                             right_frac=0.75,
-                                             legend_title_location=(0.78, 0.4),
+                                             right_frac=0.9,
+                                             legend_title_location=(0.6, 0.5),
                                              ylabel_xcoordinate=-0.1,
                                              yaxis_log=False)
 
@@ -332,14 +335,14 @@ def main():
                          short_horizon_controllers, 
                          nn_plants, nn_controllers, performance_loss,
                          num_architectures, num_nns_per_architecture, 
-                         cl_xlabel = 'Time', 
+                         cl_xlabel = 'Time (min)', 
                          cl_legend_labels = ['MPC', 'satK'] + nn_labels,
-                         cl_right_frac = 0.75,
-                         ct_right_frac = 0.75, 
+                         cl_right_frac = 0.9,
+                         ct_right_frac = 0.9, 
                          ct_legend_labels = ['MPC'] + nn_labels,
                          figure_size=figure_size_metrics,
-                         fig_cl_title_location=(0.78, 0.3),
-                         fig_ct_title_location=(0.78, 0.4),
+                         fig_cl_title_location=(0.35, 0.55),
+                         fig_ct_title_location='center',
                          cl_us=False,
                          cl_short_horizon=False,
                          cl_yaxis_log=False,
