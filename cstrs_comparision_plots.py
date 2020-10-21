@@ -1,6 +1,8 @@
 # [depends] cstrs_parameters.pickle cstrs_mpc.pickle cstrs_us.pickle
 # [depends] cstrs_satdlqr.pickle cstrs_short_horizon.pickle cstrs_train.pickle
 # [depends] cstrs_neural_network.pickle
+# [depends] %LIB%/controller_evaluation.py
+# [depends] %LIB%/cstrs_labels.py
 """ 
 Script to make plots for comparing the 
 performance of the optimal MPC controller
@@ -70,7 +72,7 @@ def _cstrs_cl_comparision_plots(scenarios,
     z: 4 outputs with setpoints. y:90 outputs. u:32 inputs.
     """
     # the x coordinate of the ylabels.
-    ylabel_xcoordinate = -0.28
+    ylabel_xcoordinate = -0.27
     figures = []
     for (scenario, mpc_plant, 
          mpc_controller, fast_plant,
@@ -135,7 +137,7 @@ def plot_inputs(t, u, ulabels, ylabel_xcoordinate,
     axes[2, 0].set_xlabel("Time (hr)")
     axes[2, 1].set_xlabel("Time (hr)")
     figure.legend(labels = ('MPC', fast_controller_name), 
-                  loc = (0.32, 0.9), ncol=2)
+                  loc = (0.31, 0.9), ncol=2)
     # Return the figure,
     return [figure]
 
@@ -161,7 +163,7 @@ def plot_controlled_outputs(t, z, zsp,
     axes[2, 0].set_xlabel("Time (hr)")
     axes[2, 1].set_xlabel("Time (hr)")
     figure.legend(labels = ('MPC', fast_controller_name), 
-                  loc = (0.32, 0.9), ncol=2)
+                  loc = (0.31, 0.9), ncol=2)
     # Return
     return [figure]
 
@@ -228,7 +230,7 @@ def main():
     """ Run these commands when this script is called."""
 
     # Set the fontize.
-    _set_font_size(paper_fontsize=14)
+    _set_font_size(paper_fontsize=16)
 
     # Get the parameters and the plant object which has the closed-loop data
     # for the two controllers.
@@ -284,8 +286,8 @@ def main():
                                              num_samples, 
                                              nn_labels,
                                              figure_size_metrics,
-                                             right_frac=0.75,
-                                             legend_title_location=(0.78, 0.4),
+                                             right_frac=0.9,
+                                             legend_title_location=(0.6, 0.5),
                                              ylabel_xcoordinate=-0.1,
                                              yaxis_log=False)
 
@@ -301,22 +303,22 @@ def main():
                          num_architectures, num_nns_per_architecture,
                          cl_xlabel = 'Time (hr) ', 
                          cl_legend_labels = ['MPC', 'SS', 'satK'] + nn_labels,
-                         cl_right_frac = 0.75,
-                         ct_right_frac = 0.75,
+                         cl_right_frac = 0.9,
+                         ct_right_frac = 0.9,
                          ct_legend_labels = ['MPC'] + nn_labels,
                          figure_size=figure_size_metrics,
-                         fig_cl_title_location = (0.78, 0.3),
-                         fig_ct_title_location = (0.78, 0.4),
+                         fig_cl_title_location = (0.35, 0.15),
+                         fig_ct_title_location = 'center',
                          cl_us=True,
                          cl_short_horizon=False,
                          cl_yaxis_log=False,
                          ylabel_xcoordinate=-0.1,
-                         num_bins=100)
+                         num_bins=1000)
     # Stuff all the figures into one.
     figures = cl_figures + cl_metric_figures + cl_ct_figures
     with PdfPages('cstrs_comparision_plots.pdf', 'w') as pdf_file:
         for fig in figures:
             pdf_file.savefig(fig)
 
-# Execute the main function.
+# Execute the main function
 main()
