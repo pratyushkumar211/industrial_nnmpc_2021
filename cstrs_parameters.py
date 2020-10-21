@@ -1,3 +1,7 @@
+# [depends] %LIB%/linearMPC.py
+# [depends] %LIB%/nonlinearMPC.py
+# [depends] %LIB%/controller_evaluation.py
+# [depends] %LIB%/python_utils.py
 # [makes] pickle
 """ 
 Generate necessary parameters for the offline data generation and 
@@ -296,10 +300,10 @@ def _get_cstrs_mpc_controller(plant, parameters,
     Q = 1e+3*(C.T @ C)
     R = 0.1*np.eye(Nu)
     S = 0.1*np.eye(Nu)
-    N = 30
+    N = 90
     ulb = parameters['lb']['u'][:, np.newaxis]
     uub = parameters['ub']['u'][:, np.newaxis]
-    
+
     # Return a linear MPC controller instance.
     return LinearMPCController(A=A, B=B, C=C, H=H,
                                Qwx=Qwx, Qwd=Qwd,
@@ -308,7 +312,7 @@ def _get_cstrs_mpc_controller(plant, parameters,
                                Q=Q, R=R, S=S, N=N, ulb=ulb, uub=uub)
 
 def _get_cstrs_offline_simulator(controller, parameters,
-                                 z_indices, exp_dist_indices,
+                                 z_indices, unexp_z_indices, exp_dist_indices,
                                  Nsim, num_data_gen_task, 
                                  num_process_per_task, 
                                  conservative_factor, seed):
@@ -321,13 +325,14 @@ def _get_cstrs_offline_simulator(controller, parameters,
 
     # Get the setpoints.
     setpoints_z = np.zeros((Nsim, parameters['Ny']))
-    setpoints_y = sample_prbs_like(num_change=750, num_steps=Nsim, 
+    setpoints_y = sample_prbs_like(num_change=1250, num_steps=Nsim, 
                              lb=setpoint_lb, ub=setpoint_ub,
                              mean_change=120, sigma_change=2, seed=seed)
     setpoints_z[:, z_indices] = setpoints_y[:, z_indices]
+    setpoints_z[:, unexp_z_indices] = np.zeros((Nsim, len(unexp_z_indices)))
 
     # Get the disturbances. 
-    disturbances = sample_prbs_like(num_change=1500, num_steps=Nsim, 
+    disturbances = sample_prbs_like(num_change=2500, num_steps=Nsim, 
                              lb=disturbance_lb, ub=disturbance_ub,
                              mean_change=60, sigma_change=5, seed=seed+1)
     disturbances = disturbances[:, exp_dist_indices]
@@ -345,8 +350,8 @@ def _get_cstrs_offline_simulator(controller, parameters,
                              num_data_gen_task=num_data_gen_task,
                              num_process_per_task=num_process_per_task)
 
-def _get_cstrs_online_test_scenarios(Nsim, z_indices, parameters,
-                                     exp_dist_indices, seed,
+def _get_cstrs_online_test_scenarios(*, Nsim, z_indices, unexp_z_indices,
+                                     parameters, exp_dist_indices, seed,
                                      tsteps_steady):
     """ Just generate a setpoint and disturbance sequence for 
     the online comparision of the NN and the optimal MPC controllers 
@@ -366,6 +371,9 @@ def _get_cstrs_online_test_scenarios(Nsim, z_indices, parameters,
                             mean_change=180, sigma_change=2, seed=seed)
     setpoints_z[:, z_indices] = setpoints_all[:, z_indices]
     setpoints_z[0:tsteps_steady, :] = np.zeros((tsteps_steady, Ny))
+    setpoints_unexp = setpoints_z.copy()
+    setpoints_exp = setpoints_z.copy()
+    setpoints_exp[:, unexp_z_indices] = np.zeros((Nsim, len(unexp_z_indices)))
 
     # Disturbances.    
     disturbances = sample_prbs_like(num_change=48, num_steps=Nsim, 
@@ -373,13 +381,15 @@ def _get_cstrs_online_test_scenarios(Nsim, z_indices, parameters,
                                 mean_change=90, sigma_change=1, seed=seed+1)
     disturbances[0:tsteps_steady, :] = np.zeros((tsteps_steady, Np))
 
-    scenarios = [(setpoints_z.copy(), disturbances)]
+    scenarios = [(setpoints_exp, disturbances), 
+                 (setpoints_unexp, disturbances)]
     # Return the scenarios.
     return scenarios
 
 if __name__ == "__main__":
     # Construct the plant, controller, and the online test parameters.
     z_indices = (0, 3, 4, 7, 8, 11)
+    unexp_z_indices = [4]
     exp_dist_indices = (0, 1, 2, 3, 4)
     # Get the plotting parameters.
     cstrs_plant_parameters = _get_cstrs_parameters()
@@ -387,6 +397,7 @@ if __name__ == "__main__":
                                                         cstrs_plant_parameters)
     cstrs_plant_parameters['exp_dist_indices'] = exp_dist_indices
     cstrs_plant_parameters['z_indices'] = z_indices
+    cstrs_plant_parameters['unexp_z_indices'] = unexp_z_indices
     cstrs = _get_cstrs_plant(linear=False, parameters=cstrs_plant_parameters)
     cstrs_mpc_controller = _get_cstrs_mpc_controller(cstrs, 
                                             cstrs_plant_parameters,
@@ -394,16 +405,16 @@ if __name__ == "__main__":
     cstrs_us_controller = _get_us_controller(cstrs_mpc_controller)
     cstrs_satdlqr_controller = _get_satdlqr_controller(cstrs_mpc_controller)
     cstrs_sh_controller = _get_short_horizon_controller(cstrs_mpc_controller, 
-                                                        N=3)
+                                                        N=10)
     cstrs_online_test_scenarios = _get_cstrs_online_test_scenarios(Nsim=4320, 
-                                        z_indices=z_indices,
+                                        z_indices=z_indices, unexp_z_indices=unexp_z_indices,
                                         parameters=cstrs_plant_parameters,
                                         exp_dist_indices=exp_dist_indices,
                                         seed=50, tsteps_steady=5)
     cstrs_offline_simulator = _get_cstrs_offline_simulator(cstrs_mpc_controller,
-                                            cstrs_plant_parameters, z_indices,
-                                            exp_dist_indices, Nsim=90000,
-                                            num_data_gen_task=int(sys.argv[1]),
+                            cstrs_plant_parameters, z_indices, unexp_z_indices, 
+                                            exp_dist_indices, Nsim=150000,
+                                            num_data_gen_task=1,
                                             num_process_per_task=1, 
                                             conservative_factor=1.02, seed=1)
     # Create a dictionary with the required data.
@@ -414,6 +425,8 @@ if __name__ == "__main__":
                             offline_simulator=cstrs_offline_simulator,
                             online_test_scenarios=cstrs_online_test_scenarios,
                             cstrs_plant_parameters=cstrs_plant_parameters)
+    #cstrs_parameters = dict(online_test_scenarios=cstrs_online_test_scenarios, 
+    #                        cstrs_plant_parameters=cstrs_plant_parameters)
     # Save data.
     PickleTool.save(data_object=cstrs_parameters, 
                     filename='cstrs_parameters.pickle')

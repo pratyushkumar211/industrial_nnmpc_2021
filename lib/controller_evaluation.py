@@ -17,6 +17,8 @@ from python_utils import (figure_size_a4, PickleTool,
                           H5pyTool)
 from matplotlib.backends.backend_pdf import PdfPages
 
+plt.rcParams.update({'figure.max_open_warning': 0})
+
 def _sample_repeats(num_change, num_simulation_steps,
                        mean_change, sigma_change):
     """ Sample the number of times a repeat in each
@@ -198,7 +200,7 @@ def plot_cl_performance_and_comp_times(time,
         axes_cl.set_xlim([np.min(time), np.max(time)])
         figure_cl.legend(labels=cl_legend_labels, 
                          loc=fig_cl_title_location, 
-                         ncol=1)
+                         ncol=2)
         # Set some plotting parameters for the histogram.
         axes_ct.set_xscale('log')
         axes_ct.set_yscale('linear')

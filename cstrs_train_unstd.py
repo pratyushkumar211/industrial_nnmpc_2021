@@ -1,3 +1,6 @@
+# [depends] %LIB%/LinearMPCLayers.py
+# [depends] %LIB%/controller_evaluation.py
+# [depends] %LIB%/python_utils.py
 # [makes] pickle
 """
 Script to train an unstructured neural network controller for the 
@@ -5,7 +8,7 @@ double integrator example.
 Pratyush Kumar, pratyushkumar@ucsb.edu
 """
 import sys
-sys.path.append('lib/')
+sys.path.append('../lib/')
 import numpy as np
 import os
 import time
@@ -61,7 +64,7 @@ raw_data = H5pyTool.load_training_data(filename='cstrs_offline_data.h5py')
                                            scale=True)
 
 # Get a NN controller.
-regulator_dims = [36, 224, 224, 224, 6]
+regulator_dims = [72, 224, 224, 224, 6]
 nn_controller = create_nn_controller(regulator_dims=regulator_dims)
 
 # Train the NN controller.

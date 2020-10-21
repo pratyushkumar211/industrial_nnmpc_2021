@@ -1,3 +1,6 @@
+# [depends] %LIB%/python_utils.py
+# [depends] %LIB%/linearMPC.py
+# [depends] %LIB%/controller_evaluation.py
 # [makes] pickle
 """ 
 Generate the parameters for the offline data generation and 
@@ -6,7 +9,7 @@ the online simulation for the crude distillation unit model.
 #import custompath
 #custompath.add()
 import sys
-sys.path.append('lib/')
+sys.path.append('../lib/')
 import matio
 import scipy.linalg
 import numpy as np
@@ -98,7 +101,7 @@ def _get_cdu_mpc_controller(plant, lb, ub):
     Q = 2*(plant.C.T @ plant.C)
     R = 0.1*np.eye(Nu)
     S = 0*np.eye(Nu)
-    N = 10
+    N = 140
     
     # The input constraints.
     ulb = lb['u']
@@ -131,13 +134,13 @@ def _get_cdu_offline_simulator(controller, dist_indices, dist_scaling,
     disturbance_ub = disturbance_ub*dist_scaling*conservative_factor
 
     # Generate the setpoints.
-    setpoints = sample_prbs_like(num_change=750, num_steps=Nsim, 
+    setpoints = sample_prbs_like(num_change=894, num_steps=Nsim, 
                                  lb=setpoint_lb, ub=setpoint_ub,
                                  mean_change=400, sigma_change=1, seed=seed)
     setpoints = np.concatenate((np.zeros((Nsim, Ny-Nz)), setpoints), axis=1)
 
     # Generate the disturbances. 
-    disturbances = sample_prbs_like(num_change=1500, num_steps=Nsim, 
+    disturbances = sample_prbs_like(num_change=1788, num_steps=Nsim, 
                                 lb=disturbance_lb, ub=disturbance_ub,
                                 mean_change=200, sigma_change=1, seed=seed+1)
 
@@ -207,7 +210,7 @@ if __name__ == "__main__":
     cdu_offline_simulator = _get_cdu_offline_simulator(cdu_mpc_controller,
                                                        dist_indices,
                                                        dist_scaling,
-                                                       lb, ub, Nsim=300000, 
+                                                       lb, ub, Nsim=357600, 
                                             num_data_gen_task=int(sys.argv[1]),
                                             num_process_per_task=1)
     cdu_scenarios = _get_cdu_online_scenarios(cdu_mpc_controller, 
@@ -219,12 +222,14 @@ if __name__ == "__main__":
                                 dist_indices=dist_indices, 
                                 us=model['us'], ys=model['ys'])
     # Create a dictionary with the required data.
-    cdu_parameters = dict(plant=cdu, mpc=cdu_mpc_controller,
-                          us=cdu_us_controller,
-                          satdlqr=cdu_satdlqr_controller,
-                          short_horizon=cdu_sh_controller,
-                          offline_simulator=cdu_offline_simulator,
-                          online_test_scenarios=cdu_scenarios,
+    #cdu_parameters = dict(plant=cdu, mpc=cdu_mpc_controller,
+    #                      us=cdu_us_controller,
+    #                      satdlqr=cdu_satdlqr_controller,
+    #                      short_horizon=cdu_sh_controller,
+    #                      offline_simulator=cdu_offline_simulator,
+    #                      online_test_scenarios=cdu_scenarios,
+    #                      cdu_plant_parameters=cdu_plant_parameters)
+    cdu_parameters = dict(online_test_scenarios=cdu_scenarios, 
                           cdu_plant_parameters=cdu_plant_parameters)
     # Save data.
     PickleTool.save(data_object=cdu_parameters, 

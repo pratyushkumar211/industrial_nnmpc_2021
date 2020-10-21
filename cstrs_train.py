@@ -1,3 +1,6 @@
+# [depends] %LIB%/LinearMPCLayers.py
+# [depends] %LIB%/controller_evaluation.py
+# [depends] %LIB%/python_utils.py
 # [makes] pickle
 """
 Script to train the neural network controller for the 
@@ -48,7 +51,7 @@ def train_nn_controller(nn_controller, data,
     tstart = time.time()
     nn_controller.fit(x=[data['x'], data['uprev'], data['xs'], data['us']], 
                       y=[data['u']], 
-                      epochs=500,
+                      epochs=2000,
                       batch_size=1024,
                       validation_split=0.1,
                       callbacks = [checkpoint_callback])
@@ -60,16 +63,18 @@ def train_nn_controller(nn_controller, data,
 # Get the raw data for training.
 raw_data = H5pyTool.load_training_data(filename='cstrs_offline_data.h5py')
 (scaled_data, xscale) = _get_data_for_training(data=raw_data, 
-                                           num_samples=120000, 
+                                           num_samples=150000, 
                                            scale=True)
 
 # Arrange the number of samples and the dimensions of the NN controller.
-num_samples = [num_sample for num_sample in range(24000, 120001, 24000)]
+num_samples = [num_sample for num_sample in range(40000, 150001, 10000)]
 data_generation_times = []
 training_times = []
 memory_footprints = []
-regulator_dims = [[36, 160, 160, 6], [36, 192, 192, 6],
-                  [36, 224, 224, 6], [36, 256, 256, 6]]
+regulator_dims = [[72, 224, 224, 224, 6],
+                  [72, 240, 240, 240, 6], 
+                  [72, 256, 256, 256, 6],
+                  [72, 272, 272, 272, 6]]
 trained_regulator_weights = []
 
 # Take input from the user about which architecture to train.

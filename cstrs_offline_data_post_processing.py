@@ -1,8 +1,9 @@
+# [depends] %LIB%/controller_evaluation.py
 """
 Post process the offline generated dataset.
 """
 import sys
-sys.path.append('lib/')
+sys.path.append('../lib/')
 from python_utils import H5pyTool
 import os
 import itertools
