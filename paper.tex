@@ -49,6 +49,8 @@
 \usepackage{lineno}
 \usepackage[singlelinecheck=false]{caption}
 
+\usepackage{mpcsymbols}
+
 %\biboptions{longnamesfirst, semicolon}
 %% natbib.sty is loaded by default. However, natbib options can be
 %% provided with \biboptions{...} command. Following options are
@@ -70,14 +72,6 @@
 %% \biboptions{comma,round}
 
 % \biboptions{}
-\newcommand{\useq}{\mathbf{u}}
-\newcommand{\xseq}{\mathbf{x}}
-\newcommand{\bbR}{\mathbb{R}}
-\newcommand{\bbW}{\mathbb{W}}
-\newcommand{\bbU}{\mathbb{U}}
-\newcommand{\bbI}{\mathbb{I}}
-\newcommand{\bbX}{\mathbb{X}}
-\newcommand{\bbP}{\mathbb{P}}
 
 \graphicspath{{./}{./figures/}{./figures/paper/}}
 
@@ -178,8 +172,8 @@ the optimization to be solved online is a quadratic program (QP).
 The development 
 of efficient QP algorithms 
 \citep*{kouzoupis:frison:zanelli:diehl:2018, wright:2019}
-allowed practitioners to adopt MPC
-in process industries \citep*{qin:badgwell:2003, lahiri:2017}.
+allowed practitioners to apply MPC
+in the process industries \citep*{qin:badgwell:2003, lahiri:2017}.
 
 An alternative strategy to 
 real time optimization for the deployment of MPC 
@@ -196,7 +190,7 @@ in the QP such as the state estimate and some
 steady-state targets that are computed for 
 offset-free control. The number of polyhedral 
 partitions of the state space grows exponentially
-with model dimensions, however. Thereby prohibiting 
+with model dimensions, however, which prohibits
 the deployment of this strategy on large-scale 
 systems.
 
@@ -236,7 +230,7 @@ in these problems:
 i) In a large dimensional state space,   
 the entire set of feasible states of the QP cannot be sampled  
 densely for the NN training. This issue is 
-a form of the curse of dimensionality.
+a form of the well-known curse of dimensionality.
 ii) One may sample the state space partially
 to avoid this problem, but the time required for the 
 data generation can still be impractical
@@ -269,28 +263,28 @@ as an alternative to real time optimization in MPC,
 with an emphasis on large applications which 
 are challenging with QP solvers. 
 The focus of this article is on setpoint tracking 
-MPC problems relevant for deployment in process industries.
+MPC problems relevant for deployment in the process industries.
 We present a new feedforward network architecture to obtain
 offset-free closed-loop performance with the NNs.
 Additionally, we use the input-to-state
-stability results \citep*{sontag:wang:1995}
+stability results
 available in the MPC literature, and establish
 conditions under which the NN controller 
 is robust to state estimation errors and process 
 disturbances. We present case studies 
-on process control examples which
+on process control examples that
 demonstrate the scalability of the proposed NN design 
 approach.
 
 The related work by \cite*{chen:wang:atanasov:kumar:morari:2019}
 demonstrates the scalability of NNs 
 to approximate the MPC feedback law on systems with 
-state dimensions upto thirty-six. The setpoint 
+state dimensions up to 36. The setpoint 
 tracking offset-free MPC problem and state 
-dimensions upto two-fifty considered in this 
+dimensions up to 250 considered in this 
 article is not addressed in that work. 
 \cite*{drgona:picard:kvasnica:helsen:2018}
-takes a different approach for the scalability
+take a different approach for the scalability
 of NN controllers, in which 
 the dimensionality of the parameters in the MPC QP is first 
 reduced using principal component analysis, and the 
@@ -323,12 +317,12 @@ $\mathcal{K}_{\infty}$ if it is of class $\mathcal{K}$
 and unbounded ($\alpha(s) \rightarrow \infty$ as 
 $s \rightarrow \infty$). A function
 $\beta : \bbR_{\geq 0} \times \bbI_{\geq 0} \rightarrow \bbR_{\geq 0}$
-is of class $\mathcal{K} \mathcal{L}$ if it is continuous,
-for a fixed $k \in \bbI_{\geq 0}$, $\beta(\cdot, k)$ is of class $\mathcal{K}$,
-and for a fixed $s \geq 0$, $\beta(s, \cdot)$ is nonincreasing
+is of class $\mathcal{KL}$ if it is continuous,
+for each $k \in \bbI_{\geq 0}$, $\beta(\cdot, k)$ is of class $\mathcal{K}$,
+and for each $s \geq 0$, $\beta(s, \cdot)$ is nonincreasing
 and satisfies $\textnormal{lim}_{k \rightarrow \infty} \beta(s, k) = 0$.
 Given $V : X \rightarrow \bbR_{\geq 0}$ and $\tau > 0$, define 
-$\textnormal{lev}_{\tau} V = \{ x \in X | V(x) \leq \tau \}$.
+$\textnormal{lev}_{\tau} V = \{ x \in X \mid V(x) \leq \tau \}$.
 Bold symbols, e.g., $\mathbf{d}$ denote sequences, 
 $d(k)$ denotes an element of $\mathbf{d}$ at time 
 $k \in \bbI_{\geq 0}$, and $\mathbf{d}_i$ 
@@ -363,7 +357,7 @@ The objective of the disturbance model
 is to remove offset in the controlled 
 plant measurements at steady
 state operations and maintain
-them at their setpoints.
+the controlled variables at their setpoints.
 We assume in the rest of this 
 article that a Kalman filter can be constructed to 
 estimate the model state ($\hat{x}$) and disturbance ($\hat{d}$) 
@@ -434,8 +428,8 @@ horizon length, and
 ($\tilde{x}, \tilde{u}$) are the state and control 
 in deviation from the current steady state targets ($x_s, u_s$). 
 The penalty matrix $P$ is chosen as the 
-optimal cost-to-go matrix of the unconstrained 
-linear quadratic infinite horizon problem.
+optimal cost-to-go matrix of the unconstrained infinite horizon 
+linear quadratic problem.
 The decision variable in this 
 QP is the control sequence 
 $\mathbf{\tilde{u}} = [\tilde{u}(0)', \tilde{u}(1)', ..., \tilde{u}(N-1)']'$.
@@ -495,7 +489,7 @@ that takes the triple ($x, x_s, u_s$) as its input
 and outputs a control that is close to the optimal control. 
 This strategy has been proposed in \cite*{karg:lucia:2020} and 
 \cite*{chen:saulnier:atanasov:lee:kumar:pappas:morari:2018}
-for one fixed steady state. The approach has not been 
+for a single fixed steady state. The approach has not been 
 demonstrated to scale to the size of model dimensions 
 and the setpoint tracking 
 offset-free MPC problem considered in this article.
@@ -514,23 +508,22 @@ This structure implies $u_s = \kappa_{NN}(x = x_s, x_s, u_s)$,
 in which we use $\kappa_{NN}(\cdot)$ to denote the NN control law.
 To incorporate this information in a NN, we introduce the following
 architecture
-
-\begin{align*}
+\begin{align}
 z_0 &= \begin{bmatrix}
-    x', & x_s', & u_s', & x_s', & x_s', & u_s'
-    \end{bmatrix}'\\
+    x', & x_s', & u_s', & x_s', & x_s', & u_s' \end{bmatrix}'\notag \\
     f_i(z_{i-1}) &= \begin{bmatrix}
-        W_i & 0 \\
+        W_i & 0 \notag \\
         0 & W_i
           \end{bmatrix}z_{i-1}  + \begin{bmatrix}
-            b_i \\
+            b_i \notag 
             b_i
-            \end{bmatrix} \\
-    z_i &= g(f_i(z_{i-1})), \textnormal{for} \ i \in \bbI_{1:h} \\
+            \end{bmatrix} \notag\\
+    z_i &= g(f_i(z_{i-1})), \textnormal{for} \ i \in \bbI_{1:h} \notag \\
     u &= u_s + \begin{bmatrix}
   W_{h + 1}, & -W_{h + 1} \\
-    \end{bmatrix} z_h \\
-\end{align*}
+    \end{bmatrix} z_h
+\label{eq:NNstruct}
+\end{align}
 in which $g(a) = \textnormal{max} (0, a)$,
 is the ReLU operation applied element-wise on its vector input,
 $z_i$ is the output of each hidden layer
@@ -541,8 +534,7 @@ The parameters to be optimized using
 training data are ($W_i, b_i$) 
 and $W_{h+1}$, which are matrices 
 of appropriate dimensions.
-At steady-states
-when $x=x_s$ in $z_0$, this structured network
+At steady state, when $x=x_s$ in $z_0$, \eqref{eq:NNstruct}
 outputs $u_s$ regardless of the choice of weights.
 The software tensorflow 
 \citep{abadi:agarwal:barham:brevdo:et-al:2015} is used 
@@ -581,10 +573,10 @@ The domain of the MPC control law ($\kappa_N(x, x_s, u_s)$)
 is therefore the state space 
 $\bbR^{n}$ and the possible set of steady-state 
 target pairs. Sampling this entire domain of the
-MPC control law for NN training is difficult in larger 
-dimensions and we show in Section 
+MPC control law for NN training is difficult in large 
+dimension, and we show in Section 
 \ref{sec:simulation_studies} that it is
-not required for practical applications. 
+also not required for practical applications. 
 
 From a plant operations perspective,
 a majority of the large-scale petrochemical plants
@@ -600,7 +592,7 @@ of time. The states and steady-state targets
 spanned in a closed-loop 
 operation per scenario is thereby considerably less 
 than the entire domain of the MPC control law.
-This type of operation of large chemical plants
+This typical operation of large chemical plants
 can be exploited, and we propose the 
 following data generation procedure 
 to perform offline simulations using the model to 
@@ -744,11 +736,11 @@ using the optimal cost function ($V_N^0(x)$) of the QP
 as a Lyapunov function.
 The region of attraction of the closed-loop system 
 $x^+ = Ax + B\kappa_N(x)$ when no hard terminal region 
-constraint \citep*{limon:alamo:salas:camacho:2006}  
-is included in the QP can be characterized
-as $\mathcal{X}_N = \textnormal{lev}_{Nd + \tau} \ V_N^0(x)$.
-In which, $\tau$ is a level
-set parameter of the terminal region chosen as
+constraint is included in the QP
+can be characterized as $\mathcal{X}_N = \textnormal{lev}_{Nd + \tau} \
+V_N^0(x)$ \citep*{limon:alamo:salas:camacho:2006}.
+The parameter $\tau$ is the level set
+parameter of the terminal region chosen as
 $\bbX_f = \textnormal{lev}_{\tau} \ x'Px$, and $d > 0$
 is a constant such that $\ell(x, u) \geq d$ for all 
 $x \in \bbR^n \setminus \bbX_f$ and 
@@ -772,13 +764,10 @@ in which $\hat{x} = x + e$ is the state estimate,
 $w$ is a process disturbance, 
 and $e$, $e^+$ are the state estimation errors at the 
 current and next timestep respectively. 
-We use $\phi_d(k;\hat{x})$ to denote a 
-solution of the perturbed system 
-at time $k$ starting from an initial state $\hat{x}$,
-and $\phi(k;x)$ to denote a solution 
-of the nominal system when the state estimation errors and process
-disturbances are zero starting 
-from an initial state $x$.
+We use $\phi_d(k;\hat{x})$ to denote a solution of the perturbed system  at time
+$k$ starting from an initial state $\hat{x}$; and $\phi(k;x)$ to denote a
+solution  of the nominal system starting  from an initial state $x$ when the
+state estimation errors and process disturbances are zero.
 
 \begin{thm} \label{thm:nnrobustness}
 For all $ 0 < \rho \leq Nd + \tau$, 
@@ -800,7 +789,7 @@ $\bar{e}_{NN} = \textnormal{max}_{\hat{x} \in S} \vert e_{NN}(\hat{x}) \vert$.
 \end{thm}
 
 The proof of this theorem along with the required 
-input-to-state stability definitions is provided 
+input-to-state stability definitions are provided 
 in Appendix \ref{app:theorem1}.
 In the nominal case, 
 the disturbance sequences $\mathbf{e}$ and $\mathbf{w}$ are zero.
@@ -810,12 +799,12 @@ $\vert \phi(k; x) \vert \leq \beta(\vert x \vert, k) +
 the NN training is to reduce the worst 
 approximation error ($\bar{e}_{NN}$) 
 in the state space of interest and 
-strengthen the bounds on the closed-loop states. 
+reduce the bound on the closed-loop states. 
 
 \section{Simulation studies} \label{sec:simulation_studies}
 
 In this section, two case studies are presented 
-which demonstrate the 
+that demonstrate the 
 scalability of the proposed NN design approach.
 The closed-loop performance of NNs and computational benefits over 
 online QP based MPC are analyzed in these case studies.
@@ -830,21 +819,21 @@ unknown during the offline network design phase.
 Both these types of simulations are conducted to 
 analyze the interpolation and extrapolation 
 abilities of the NNs, and are referred subsequently as 
-simulations with expected and unexpected plant behaviors.
+simulations with \textit{expected} and \textit{unexpected} plant behaviors, respectively.
 
 The closed-loop performance of the 
 following alternative and 
 equivalently fast controllers as NNs are also compared
-in the validation simulations.
-a) steady state controller (SS): the solution
+in the validation simulations:
+(a) steady state controller (SS): the solution
 of the target selector is directly applied to the plant 
-$u = u_s$, b) saturated linear quadratic regulator (satK):
+$u = u_s$; (b) saturated linear quadratic regulator (satK):
 the unconstrained LQR gain 
 $K$ is computed and used in the control law 
-$u = \textnormal{sat}(K(x-x_s) + u_s, \underline{u}, \overline{u})$,
-c) short horizon controller (SH): an MPC problem
-with a short control horizon is solved online, 
-d) Unstructured NN (NN-UNS): a standard feedforward network is 
+$u = \textnormal{sat}(K(x-x_s) + u_s, \underline{u}, \overline{u})$;
+(c) short horizon controller (SH): an MPC problem
+with a short control horizon is solved online;
+(d) Unstructured NN (NN-UNS): a standard feedforward network is 
 trained with the triple ($x, x_s, u_s$) as the input
 and then used as the feedback controller online.
 
@@ -1163,7 +1152,7 @@ distillation unit model \citep*{pannocchia:rawlings:wright:2007}
 with 252 states, 32 controls, and 90 measurements. The 
 schematic of this model is shown in Figure \ref{fig:schematic_cdu}, 
 which is a typical crude unit found in petrochemical refineries.
-The plant model is linear, input and outputs are scaled 
+The plant model is linear, and input and outputs are scaled 
 for the MPC regulator as in the previous example.
 Only four measurements that represent 
 the quality of the crude side products have setpoints, 
@@ -1200,14 +1189,14 @@ Figure \ref{fig:cdu_statistics} shows the
 statistics for the simulation study performed for this 
 example.
 The data requirement to obtain 
-an accurate NN controller is shown in top left.
+an accurate NN controller is shown in the top left.
 The batch size 
 in Adam was chosen as 2048 samples, and all the NNs 
 are trained for 1500 epochs.
 The transient controller performance index 
 for one validation simulation
 obtained with the four structured NNs,
-satK, and MPC controllers is shown in center bottom.
+satK, and MPC controllers is shown in the center bottom.
 The top right plot shows the 
 histogram of online computation times 
 of the NNs and QP solver.
@@ -1242,15 +1231,15 @@ Neural networks have been demonstrated
 to approximate the MPC feedback law
 for treating large-scale, linear MPC applications
 that may be out of reach with QP solvers. 
-The proposed no online optimization based
-methods to date in the literature such as storing 
+The proposed methods avoiding online optimization
+to date in the literature, such as storing 
 the entire MPC feedback law 
 and sampling the large dimensional state space 
-for the NN training are not tractable for the problems 
+for the NN training, are not tractable for the problems 
 considered in this article.
 
 The key features for the scalability of the proposed approach 
-are the structure of NN and data generation for only
+are the structure of the NN and data generation for only
 typical plant operational scenarios. 
 The NN design approach was demonstrated to scale on an
 industrial crude distillation unit model with state and
@@ -1277,7 +1266,7 @@ and process disturbances,
 provides some theoretical support 
 to practitioners interested in the deployment of NNs. 
 
-\section*{Acknowledgement}
+\section*{Acknowledgment}
 %The authors acknowledge Professor Stephen J. Wright 
 %at the University of Wisconsin, Madison
 %for helpful discussions on machine learning topics and providing 
