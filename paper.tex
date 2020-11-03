@@ -73,6 +73,12 @@
 
 % \biboptions{}
 
+\newcommand{\underl}[1]{\underline{#1}}
+\newcommand{\overl}[1]{\overline{#1}}
+\newcommand{\satlb}[1]{\textnormal{sat}(#1, \underline{#1}, \overline{#1})}
+\newcommand{\tif}{\textnormal{if}}
+
+
 \graphicspath{{./}{./figures/}{./figures/paper/}}
 
 \newdefinition{assumption}{Assumption}
@@ -331,11 +337,11 @@ $\mathbf{d}$ for $k \in \bbI_{0:i-1}$.
 Define $\norm{\norm{\mathbf{d}_i}} = 
 \textnormal{max}_{k \in \bbI_{0:i-1}} \norm{d(k)}$.
 For a given vector $a$, lower and upper bounds 
-($\underline{a}, \overline{a}$), define the saturation function 
-as $\textnormal{sat}(a, \underline{a}, \overline{a}) = 
-\{ a \ \textnormal{if} \ \underline{a} \leq a \leq \overline{a}; 
-\underline{a} \ \textnormal{if} \ a < \underline{a};
-\overline{a} \ \textnormal{if} \ \overline{a} < a \}$.
+($\underl{a}, \overl{a}$), define the saturation function 
+as $\satlb{a} = 
+\{ a \ \tif \ \underl{a} \leq a \leq \overl{a}; 
+\underl{a} \ \tif \ a < \underl{a};
+\overl{a} \ \tif \ \overl{a} < a \}$.
 
 \section{Linear model predictive control} \label{sec:mpc}
 
