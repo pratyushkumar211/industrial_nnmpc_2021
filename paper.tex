@@ -309,7 +309,7 @@ Subscripts denote restrictions
 (e.g., $\bbR_{\geq 0}$ for nonnegative reals and 
 $\bbI_{a:b}$ for integers in the 
 closed interval $[a, b]$). The Euclidean norm 
-is denoted by $\vert \cdot \vert$. A function 
+is denoted by $\norm{\cdot}$. A function 
 $\alpha : \bbR_{\geq 0} \rightarrow \bbR_{\geq 0}$
 is of class $\mathcal{K}$ if it is continuous, zero 
 at zero, and strictly increasing. This function is of class 
@@ -328,8 +328,8 @@ $d(k)$ denotes an element of $\mathbf{d}$ at time
 $k \in \bbI_{\geq 0}$, and $\mathbf{d}_i$ 
 denotes the collection of elements of 
 $\mathbf{d}$ for $k \in \bbI_{0:i-1}$.
-Define $\vert \vert \mathbf{d}_i \vert \vert = 
-\textnormal{max}_{k \in \bbI_{0:i-1}} \vert d(k) \vert$.
+Define $\norm{\norm{\mathbf{d}_i}} = 
+\textnormal{max}_{k \in \bbI_{0:i-1}} \norm{d(k)}$.
 For a given vector $a$, lower and upper bounds 
 ($\underline{a}, \overline{a}$), define the saturation function 
 as $\textnormal{sat}(a, \underline{a}, \overline{a}) = 
@@ -360,7 +360,7 @@ state operations and maintain
 the controlled variables at their setpoints.
 We assume in the rest of this 
 article that a Kalman filter can be constructed to 
-estimate the model state ($\hat{x}$) and disturbance ($\hat{d}$) 
+estimate the model state ($\xhat$) and disturbance ($\dhat$) 
 from measurements. 
 
 \subsection{Target selector}
@@ -379,14 +379,14 @@ subject to
         x_s \\
         u_s
     \end{bmatrix} &= \begin{bmatrix}
-        B_d\hat{d} \\
-        r_{sp} - HC_d\hat{d}
+        B_d\dhat \\
+        r_{sp} - HC_d\dhat
     \end{bmatrix} \\
     \underline{u} \leq u_s \leq \overline{u}
 \end{align}
 in which
 ($x_s, u_s$) is the 
-target steady state pair,
+target steady-state pair,
 $r=Hy$ are the controlled measurements
 chosen as some subset 
 or a linear combination of all the measurements,
@@ -394,7 +394,7 @@ or a linear combination of all the measurements,
 actuator bounds, and
 ($u_{sp}, r_{sp}$) are the input and 
 controlled measurement setpoints.
-The equality constraint $r_{sp} = H(Cx_s + C_d\hat{d})$
+The equality constraint $r_{sp} = H(Cx_s + C_d\dhat)$
 can be difficult to satisfy exactly in real time 
 depending on the controlled measurement setpoint 
 and disturbance estimate. 
@@ -410,7 +410,7 @@ changes in real time.
 
 \subsection{Regulator}
 Based on the state estimate and
-target steady state pair,
+target steady-state pair,
 the following QP is solved to determine the 
 actuator move to be applied to the plant
 \begin{align} \label{eqn:regulator}
@@ -418,15 +418,15 @@ actuator move to be applied to the plant
 \end{align}
 subject to 
 \begin{align}
-    \tilde{x}^+ &= A\tilde{x} + B\tilde{u}, \quad \tilde{x}(0) = \hat{x} - x_s \\
+    \tilde{x}^+ &= A\tilde{x} + B\tilde{u}, \quad \tilde{x}(0) = \xhat - x_s \\
     &\underline{u} \leq \tilde{u} + u_s \leq \overline{u}
     \label{eqn:regulator_constraints}
 \end{align}
-in which $\hat{x}$ is the state estimate after the current measurement,
+in which $\xhat$ is the state estimate after the current measurement,
 $N$ is the control 
 horizon length, and
 ($\tilde{x}, \tilde{u}$) are the state and control 
-in deviation from the current steady state targets ($x_s, u_s$). 
+in deviation from the current steady-state targets ($x_s, u_s$). 
 The penalty matrix $P$ is chosen as the 
 optimal cost-to-go matrix of the unconstrained infinite horizon 
 linear quadratic problem.
@@ -435,8 +435,8 @@ QP is the control sequence
 $\mathbf{\tilde{u}} = [\tilde{u}(0)', \tilde{u}(1)', ..., \tilde{u}(N-1)']'$.
 The first move of the optimal solution is denoted 
 as the MPC feedback law,
-$\kappa_N(\hat{x}, x_s, u_s) = 
-\mathbf{\tilde{u}}^0(0;\hat{x}, x_s, u_s) + u_s$, 
+$\kappa_N(\xhat, x_s, u_s) = 
+\mathbf{\tilde{u}}^0(0;\xhat, x_s, u_s) + u_s$, 
 which is applied to the plant. This feedback law is a function of the 
 state estimate and target steady-state pair. A rate-of-change 
 penalty on the control can be imposed in the QP objective
@@ -749,23 +749,23 @@ The parameter $\tau$ is chosen small enough such that
 the unconstrained LQR satisfies the actuator constraints 
 for all $x \in \bbX_f$. The optimal cost 
 function is continuous and satisfies 
-$c_1\vert x \vert^2 \leq V_N^0(x) \leq c_2\vert x \vert^2$
-and $V_N^0(x^+) - V_N^0(x) \leq -c_1\vert x \vert^2$ 
+$c_1\norm{x}^2 \leq V_N^0(x) \leq c_2\norm{x}^2$
+and $V_N^0(x^+) - V_N^0(x) \leq -c_1\norm{x}^2$ 
 for some $c_2 \geq c_1 > 0$.
 
-Assume that a state estimate ($\hat{x}$) is
+Assume that a state estimate ($\xhat$) is
 used by the NN to compute the control. 
 To analyze robustness, the following perturbed
 linear system is considered
 \begin{align} \label{eq:perturbed_sys}
-    \hat{x}^+ = A\hat{x} + B\kappa_N(\hat{x}) + Be_{NN}(\hat{x}) + w - Ae + e^+
+    \xhat^+ = A\xhat + B\kappa_N(\xhat) + Be_{NN}(\xhat) + w - Ae + e^+
 \end{align}
-in which $\hat{x} = x + e$ is the state estimate, 
+in which $\xhat = x + e$ is the state estimate, 
 $w$ is a process disturbance, 
 and $e$, $e^+$ are the state estimation errors at the 
 current and next timestep respectively. 
-We use $\phi_d(k;\hat{x})$ to denote a solution of the perturbed system  at time
-$k$ starting from an initial state $\hat{x}$; and $\phi(k;x)$ to denote a
+We use $\phi_d(k;\xhat)$ to denote a solution of the perturbed system  at time
+$k$ starting from an initial state $\xhat$; and $\phi(k;x)$ to denote a
 solution  of the nominal system starting  from an initial state $x$ when the
 state estimation errors and process disturbances are zero.
 
@@ -775,17 +775,17 @@ there exist constants $\delta_1, \delta_2, \delta_3 > 0$,
 functions $\beta(\cdot) \in \mathcal{K} \mathcal{L}$
 and $\alpha_e(\cdot) , \alpha_w(\cdot), \alpha_{n}(\cdot) \in \mathcal{K}$,
 such that for all disturbance sequences
-satisfying $\vert\vert \mathbf{e}_{k+1} \vert\vert \leq \delta_1$,
-$\vert\vert \mathbf{w}_k \vert\vert \leq \delta_2$,
-and $\vert e_{NN}(\hat{x}) \vert \leq \delta_3$,
-for all $\hat{x}$ in the set $S := \textnormal{lev}_{\rho} \ V_N^0(\hat{x})$,
+satisfying $\norm{\norm{\mathbf{e}_{k+1}}} \leq \delta_1$,
+$\norm{\norm{\mathbf{w}_k}} \leq \delta_2$,
+and $\norm{e_{NN}(\xhat)} \leq \delta_3$,
+for all $\xhat$ in the set $S := \textnormal{lev}_{\rho} \ V_N^0(\xhat)$,
 we have the following bound 
-$\vert \phi_d(k; \hat{x}) \vert \leq \beta(\vert \hat{x} \vert, k) 
-+ \alpha_e(\vert \vert\mathbf{e}_{k+1} \vert \vert) + 
-\alpha_w(\vert \vert \mathbf{w}_k \vert \vert) + 
+$\norm{\phi_d(k; \xhat)} \leq \beta(\norm{\xhat}, k) 
++ \alpha_e(\norm{\norm{\mathbf{e}_{k+1}}}) + 
+\alpha_w(\norm{\norm{\mathbf{w}_k}}) + 
 \alpha_n(\bar{e}_{NN})$, 
 in which 
-$\bar{e}_{NN} = \textnormal{max}_{\hat{x} \in S} \vert e_{NN}(\hat{x}) \vert$.
+$\bar{e}_{NN} = \textnormal{max}_{\xhat \in S} \norm{e_{NN}(\xhat)}$.
 \end{thm}
 
 The proof of this theorem along with the required 
@@ -794,7 +794,7 @@ in Appendix \ref{app:theorem1}.
 In the nominal case, 
 the disturbance sequences $\mathbf{e}$ and $\mathbf{w}$ are zero.
 The closed-loop states in this case have the bound
-$\vert \phi(k; x) \vert \leq \beta(\vert x \vert, k) + 
+$\norm{\phi(k; x)} \leq \beta(\norm{x}, k) + 
 \alpha_n(\bar{e}_{NN})$. Any additional value of 
 the NN training is to reduce the worst 
 approximation error ($\bar{e}_{NN}$) 
@@ -854,8 +854,8 @@ the following metrics are examined:
 \begin{itemize}
     \item Controller performance index
     \begin{align*}        
-    \Lambda_k = \dfrac{1}{k}\sum_{t=1}^{k} & \big(\vert x(t) - x_{s} (t) \vert^2_{Q} \\
-        & + \vert u(t) - u_{s} (t) \vert^2_{R} + \vert \Delta u(t) \vert^2_{S}\big)         
+    \Lambda_k = \dfrac{1}{k}\sum_{t=1}^{k} & \big(\norm{x(t) - x_{s} (t)}^2_{Q} \\
+        & + \norm{u(t) - u_{s} (t)}^2_{R} + \norm{\Delta u(t)}^2_{S}\big)         
     \end{align*}
     \item \% Performance loss = $100(\Lambda^{\textnormal{F}}_{N_{t}} - \Lambda^{\textnormal{MPC}}_{N_{t}})/\Lambda^{\textnormal{MPC}}_{N_{t}}$
     \item Average and worst-case speedups
@@ -1317,8 +1317,8 @@ system is ISS in $X$ if there exist functions
 $\beta(\cdot) \in \mathcal{K}\mathcal{L}$ and 
 $\sigma(\cdot) \in \mathcal{K}$, such that for all
 $x \in X$ and $w(i) \in \bbW$, $i \in \bbI_{0:k-1}$, 
-$\vert \psi(k; x, \mathbf{w}_k) \vert \leq \beta(\vert x\vert, k) 
-+ \sigma(\vert \vert \mathbf{w}_k\vert \vert)$, in which 
+$\norm{\psi(k; x, \mathbf{w}_k)} \leq \beta(\norm{x}, k) 
++ \sigma(\norm{\norm{\mathbf{w}_k}})$, in which 
 $\psi(k; x, \mathbf{w}_k)$ is the solution of the system 
 at time $k$, starting from an initial state $x$, and with the
 disturbance sequence $\mathbf{w}_k$ affecting the system.
@@ -1331,8 +1331,8 @@ if there exist functions $\alpha_1(\cdot), \alpha_2(\cdot), \alpha_3(\cdot)
 \in \mathcal{K}_{\infty}$ and $\sigma(\cdot) \in \mathcal{K}$
 such that for all $x \in X$ and $w \in \bbW$
 \begin{align*}
-    \alpha_1(\vert x \vert) \leq & V(x) \leq \alpha_2(\vert x \vert) \\
-    V(f(x, w)) &- V(x) \leq -\alpha_3(\vert x \vert) + \sigma(\vert w \vert)
+    \alpha_1(\norm{x}) \leq & V(x) \leq \alpha_2(\norm{x}) \\
+    V(f(x, w)) &- V(x) \leq -\alpha_3(\norm{x}) + \sigma(\norm{w})
 \end{align*}
 \end{definition}
 
@@ -1357,7 +1357,7 @@ inequality for $\mathcal{K}$ functions respectively.
     $D$ closed, and $f : D \rightarrow \bbR^n$ continuous.  
     Then there exists a $\sigma(\cdot) \in \mathcal{K}_{\infty}$,
     such that for all $x \in C$ and $y \in D$, we have that 
-    $\vert f(x) - f(y) \vert \leq \sigma(\vert x-y \vert)$.
+    $\norm{f(x) - f(y)} \leq \sigma(\norm{x-y})$.
 \end{prop}
     
 \begin{prop} \label{prop:Kfunction_inequality}
@@ -1373,76 +1373,78 @@ inequality for $\mathcal{K}$ functions respectively.
 We proceed in two steps. First, 
 we show that there exist constants $\delta_1, \delta_2, \delta_3 > 0$
 such that the set $S$ is robustly positive invariant. Then, we 
-show that $V_N^0(\hat{x})$ is an ISS Lyapunov function for 
+show that $V_N^0(\xhat)$ is an ISS Lyapunov function for 
 the perturbed system \eqref{eq:perturbed_sys} on this set $S$. Denote 
-$\tilde{x}^+ = A\hat{x} + B\kappa_N(\hat{x})$ as the nominal 
+$\tilde{x}^+ = A\xhat + B\kappa_N(\xhat)$ as the nominal 
 state evolution using the optimal MPC controller, 
-and $d(k) = [ e_{NN}(\hat{x}(k))'B', w(k)', e(k)', e(k+1)']'$
+and $d(k) = [ e_{NN}(\xhat(k))'B', w(k)', e(k)', e(k+1)']'$
 as the combination of all the disturbances at a given time $k$. 
 
 To show robust positive invariance of $S$,  
-we establish that if $V_N^0(\hat{x}) \leq \rho$, 
-then $V_N^0(\hat{x}^+) \leq \rho$.
+we establish that if $V_N^0(\xhat) \leq \rho$, 
+then $V_N^0(\xhat^+) \leq \rho$.
 Since the optimal 
-cost function ($V_N^0(\hat{x})$) is continuous,
-using $\bbR^n$ as the closed set ($\hat{x}^+ \in \bbR^n$) 
+cost function ($V_N^0(\xhat)$) is continuous,
+using $\bbR^n$ as the closed set ($\xhat^+ \in \bbR^n$) 
 and $S$ as the compact set ($\tilde{x} \in S$),
 from proposition \ref{prop:continuous_funcs} we have
 for some $\sigma_1(\cdot) \in \mathcal{K}_{\infty}$
 \begin{align}
-    \vert V_N^0(\hat{x}^+) - V_N^0(\tilde{x}^+) \vert &\leq 
-    \sigma_1(\vert \hat{x}^+ - \tilde{x}^+ \vert)  \nonumber  \\
+    \norm{V_N^0(\xhat^+) - V_N^0(\tilde{x}^+)} &\leq 
+    \sigma_1(\norm{\xhat^+ - \tilde{x}^+})  \nonumber  \\
     &\leq 
-   \sigma_1(\vert B e_{NN}(\hat{x}) \vert + \vert w \vert 
+   \sigma_1(\norm{B e_{NN}(\xhat)} + \norm{w} 
    \nonumber \\
-   & + \vert A\vert\vert e \vert +  \vert e^+ \vert) \nonumber \\
+   & + \norm{A}\norm{e} +  \norm{e^+}) \nonumber \\
      &\leq 
-   \sigma_1(\vert d \vert + \vert d \vert + \vert A \vert\vert d \vert + \vert d \vert) := \sigma_2(\vert d \vert)
+   \sigma_1(\norm{d} + \norm{d} + \norm{A}\norm{d} + \norm{d}) 
+   := \sigma_2(\norm{d})
    \label{eq:optimal_cost_bound}
 \end{align}
-in which $\sigma_2(s) := \sigma_1(\vert A\vert s +3s)$, and the last inequality 
-follows because $\vert a \vert \leq \vert [a', b']' \vert$, in which $a$ and $b$
+in which $\sigma_2(s) := \sigma_1(\norm{A} s +3s)$, and the last inequality 
+follows because $\norm{a} \leq \norm{[a', b']'}$, in which $a$ and $b$
 are both vectors, and $\sigma_2(\cdot) \in \mathcal{K}_{\infty}$.
 We partition $S$ in outer and inner parts based on 
-the value of the optimal cost $V_N^0(\hat{x})$, and bound the 
+the value of the optimal cost $V_N^0(\xhat)$, and bound the 
 combination of disturbances $d$ in each part 
-such that $V_N^0(\hat{x}^+) \leq \rho$. \\
-Case 1: $\rho/2 \leq V_N^0(\hat{x}) \leq \rho $. Using the 
+such that $V_N^0(\xhat^+) \leq \rho$. \\
+Case 1: $\rho/2 \leq V_N^0(\xhat) \leq \rho $. Using the 
 upper bound on the optimal cost, we have 
-$\rho/(2c_2) \leq \vert \hat{x} \vert^2$ for all $\hat{x}$ 
+$\rho/(2c_2) \leq \norm{\xhat}^2$ for all $\xhat$ 
 in this part of $S$. To analyze the worst-case disturbance, 
 we have from the equation \eqref{eq:optimal_cost_bound} that 
-$V_N^0(\hat{x}^+) \leq V_N^0(\tilde{x}^+) + \sigma_2(\vert d \vert) $.
+$V_N^0(\xhat^+) \leq V_N^0(\tilde{x}^+) + \sigma_2(\norm{d}) $.
 From nominal MPC cost decrease, we obtain  
-$V_N^0(\hat{x}^+) \leq V_N^0(\hat{x}) - c_1\vert \hat{x} \vert^2 + \sigma_2(\vert d \vert)$. Thus, if $\sigma_2(\vert d \vert) \leq \rho c_1/(2c_2)$, 
+$V_N^0(\xhat^+) \leq V_N^0(\xhat) - c_1\norm{\xhat}^2 + 
+\sigma_2(\norm{d})$. Thus, if $\sigma_2(\norm{d}) \leq \rho c_1/(2c_2)$, 
 at all times in this outer part of $S$, we have 
-$V_N^0(\hat{x}^+) \leq \rho$. \\
-Case 2: $V_N^0(\hat{x}) \leq \rho/2 $. From 
+$V_N^0(\xhat^+) \leq \rho$. \\
+Case 2: $V_N^0(\xhat) \leq \rho/2 $. From 
 equation \eqref{eq:optimal_cost_bound} and nominal MPC 
 cost decrease, we have for this part of $S$ that 
-$V_N^0(\hat{x}^+) \leq \rho/2 + \sigma_2(\vert d \vert)$.
-Thus, if $\sigma_2(\vert d \vert) \leq \rho/2$, 
+$V_N^0(\xhat^+) \leq \rho/2 + \sigma_2(\norm{d})$.
+Thus, if $\sigma_2(\norm{d}) \leq \rho/2$, 
 at all times in this inner part of $S$, we have 
-$V_N^0(\hat{x}^+) \leq \rho$.
+$V_N^0(\xhat^+) \leq \rho$.
 
 Therefore, if 
-$\vert d \vert \leq \textnormal{min} \{ \sigma_2^{-1}(\rho c_1/(2c_2)), 
+$\norm{d} \leq \textnormal{min} \{ \sigma_2^{-1}(\rho c_1/(2c_2)), 
 \sigma_2^{-1}(\rho/2)\} := \delta_{\textnormal{max}}$ 
 at all times, then the set $S$ is 
 robustly positive invariant. Since $c_1 \leq c_2$, 
 $\delta_{\textnormal{max}} = \sigma_2^{-1}(\rho c_1/(2c_2))$.
 The constants $\delta_1$ and $\delta_2$ are
 $\delta_{\textnormal{max}}/4$ each, 
-and $\delta_3$ is $\delta_{\textnormal{max}}/(4\vert B \vert)$.
+and $\delta_3$ is $\delta_{\textnormal{max}}/(4\norm{B})$.
 The optimal MPC cost function satisfies
 \begin{align*}
-    V_N^0(\hat{x}^+) - V_N^0(\hat{x}) &\leq 
-    -c_1\vert \hat{x} \vert^2 + \sigma_2(\vert d \vert)
+    V_N^0(\xhat^+) - V_N^0(\xhat) &\leq 
+    -c_1\norm{\xhat}^2 + \sigma_2(\norm{d})
 \end{align*}
 in the robustly positive invariant set $S$ and
-the disturbance set $\vert d \vert \leq \delta_{\textnormal{max}}$.
+the disturbance set $\norm{d} \leq \delta_{\textnormal{max}}$.
 Since the optimal cost function also satisfies the upper and lower bounds
-$c_1\vert x \vert^2 \leq V_N^0(x) \leq c_2\vert x \vert^2$,
+$c_1\norm{x}^2 \leq V_N^0(x) \leq c_2\norm{x}^2$,
 from the Definition \ref{def:iss_lyapunov_func},
 it satisfies the requirements of an ISS-Lyapunov function.
 Hence, using the Proposition \ref{prop:lyapunov_implies_iss}, 
@@ -1451,23 +1453,23 @@ ISS (Definition \ref{def:iss}),
 and there exist functions 
 $\beta(\cdot) \in \mathcal{K}\mathcal{L}$ and 
 $\sigma(\cdot) \in \mathcal{K}$, such that 
-$\vert \phi_d(k; \hat{x}) \vert \leq \beta(\vert \hat{x} \vert, k) 
-+ \sigma(\vert\vert \mathbf{d}_k\vert\vert)$. Using the Proposition
+$\norm{\phi_d(k; \xhat)} \leq \beta(\norm{\xhat}, k) 
++ \sigma(\norm{\norm{\mathbf{d}_k}})$. Using the Proposition
 \ref{prop:Kfunction_inequality} and the definition of 
 $d(k)$, we have 
 \begin{align*}
-    \vert \phi_d(k; \hat{x}) \vert & \leq \beta(\vert \hat{x} \vert, k)
-    + \sigma(\vert B\vert\bar{e}_{NN} + \vert \vert \mathbf{w}_k \vert \vert
-    + 2\vert \vert \mathbf{e}_{k+1} \vert \vert) \\
-     & \leq \beta(\vert \hat{x} \vert, k) \\
-    & +\sigma(3\vert B\vert\bar{e}_{NN}) + 
-    \sigma(3\vert \vert \mathbf{w}_k \vert \vert)
-    + \sigma(6\vert \vert \mathbf{e}_{k+1} \vert\vert)
+    \norm{\phi_d(k; \xhat)} & \leq \beta(\norm{\xhat}, k)
+    + \sigma(\norm{B}\bar{e}_{NN} + \norm{\norm{\mathbf{w}_k}}
+    + 2\norm{\norm{\mathbf{e}_{k+1}}}) \\
+     & \leq \beta(\norm{\xhat}, k) \\
+    & +\sigma(3\norm{B}\bar{e}_{NN}) + 
+    \sigma(3\norm{\norm{\mathbf{w}_k}})
+    + \sigma(6\norm{\norm{\mathbf{e}_{k+1}}})
 \end{align*}
 Therefore, the bound in the Theorem \ref{thm:nnrobustness} is established with 
 $\alpha_e(s) := \sigma(6s)$, 
 $\alpha_w(s) := \sigma(3s)$,
-$\alpha_n(s) := \sigma(3\vert B\vert s)$, and 
+$\alpha_n(s) := \sigma(3\norm{B} s)$, and 
 $\alpha_e(\cdot), \alpha_w(\cdot), \alpha_n(\cdot) \in \mathcal{K}$.
 
 \subsection{Parameters used in the CSTRs example} \label{app:cstrs_pars}
