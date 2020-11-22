@@ -65,9 +65,9 @@ def _get_cdu_data_for_plotting(plant, controller, setpoints,
     return (t, z, y, u, pest, p, ulb, uub, zsp, ell)
 
 def _cdu_cl_comparision_plots(scenarios, 
-                             mpc_plants, mpc_controllers,
-                             fast_plants, fast_controllers, 
-                             fast_controller_name,
+                              mpc_plants, mpc_controllers,
+                              fast_plants, fast_controllers, 
+                              fast_controller_name,
                              parameters,
                              plot_range):
     """Data to plot.
@@ -314,7 +314,7 @@ def main():
 
     # Make the plots for the closed loop metrics of NNs with 
     # increasing data.
-    performance_loss = cdu_neural_network['performance_loss']
+    performance_loss = cdu_neural_network['performance_loss'][:-1, ...]
     num_samples = cdu_train['num_samples']
     cl_metric_figures = plot_nn_vs_num_samples_performance(performance_loss,
                                              num_samples, 
@@ -329,6 +329,11 @@ def main():
     time = np.asarray(cdu_mpc['plants'][0].t[0:-1]).squeeze()
     nn_controllers = PickleTool.load(filename='cdu_neural_network.pickle', 
                                      type='read')['controllers']
+    # Slight modification to not plot the last architecture.
+    nn_plants = nn_plants[:(num_architectures-1)*len(num_samples)]
+    nn_controllers = nn_controllers[:(num_architectures-1)*len(num_samples)]
+    nn_labels = nn_labels[:-1]
+    num_architectures -= 1
     cl_ct_figures = plot_cl_performance_and_comp_times(time,
                          mpc_controllers,
                          us_controllers, satdlqr_controllers,

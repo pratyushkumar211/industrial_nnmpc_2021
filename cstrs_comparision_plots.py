@@ -226,8 +226,20 @@ def plot_average_stage_costs(t, ell,
     figure.legend(labels = ('MPC', fast_controller_name), loc = (0.45, 0.9))
     return [figure]
 
+def print_unstd_pars():
+
+    dim = [36, 224, 224, 224, 6]
+    (Nin, Nh, Nnh, Nout) = (dim[0], len(dim)-2, dim[1], dim[-1])
+    num_pars = Nin*Nnh + Nnh  + (Nnh**2)*(Nh-1) + Nnh*(Nh-1) + Nnh*Nout + Nout
+    print(""" Number of parameters in the 
+              unstructued architecture are: """ + str(num_pars))
+    return 
+
 def main():
     """ Run these commands when this script is called."""
+
+    # Print Num pars in the unstructured Architecture.
+    print_unstd_pars()
 
     # Set the fontize.
     _set_font_size(paper_fontsize=16)

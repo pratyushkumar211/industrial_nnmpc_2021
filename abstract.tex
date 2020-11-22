@@ -1,0 +1,104 @@
+\documentclass[xcolor=dvipsnames, 11pt]{article}
+
+\usepackage[total={4.5in, 8in}]{geometry}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{tikz,tikzsettings,bm}
+\usetikzlibrary{shapes,arrows,positioning, calc}
+\usepackage{almostfull}
+\usepackage{subcaption}
+
+\usepackage{physics}
+\usepackage{pgfplots}
+\usepackage{ragged2e}
+
+\usepackage{authblk}
+
+%% You should not need more than this for fancy math.
+\usepackage{verbatim}
+\usepackage{amsmath}   % Extra math commands and environments from the AMS
+\usepackage{amssymb}   % Special symbols from the AMS
+\usepackage{amsthm}    % Enhanced theorem and proof environments from the AMS
+\usepackage{algorithmic}
+\usepackage{latexsym}  % A few extra LaTeX symbols
+\usepackage{makecell}
+%\usepackage{lucidbry}
+\input{stanacce}
+\renewcommand{\baselinestretch}{1.0666}
+
+%% The URL package is handy for typesetting URLs.  It does not define % an
+%\email command because so many document styles already do that. % So we define
+%one here that uses a typewriter font.
+\usepackage{url}
+%\DeclareRobustCommand{\email}{\begingroup \urlstyle{tt}\Url}
+\providecommand{\email}{}
+\renewcommand{\email}[1]{\texttt{#1}}
+
+%% This provides various customized verbatim commands and % environments.  You
+%probably don't need it.
+\usepackage{fancyvrb}
+\DefineShortVerb{\|} \VerbatimFootnotes
+\DefineVerbatimEnvironment{code}{Verbatim}{%
+  frame=single, framesep=1em, xleftmargin=1em, xrightmargin=1em, samepage=true,
+  fontsize=\footnotesize}
+\usepackage{upquote}
+
+\newcommand{\useq}{\mathbf{u}} \newcommand{\xseq}{\mathbf{x}}
+\newcommand{\bbR}{\mathbb{R}} \newcommand{\bbU}{\mathbb{U}}
+\newcommand{\bbX}{\mathbb{X}}
+
+\usepackage[authoryear,round,longnamesfirst]{natbib}
+
+%% You won't normally need this definition in your documents, but it % is here
+%so we can typeset the BibTeX logo correctly.
+\makeatletter
+\@ifundefined{BibTeX} {\def\BibTeX{{\rmfamily B\kern-.05em%
+    \textsc{i\kern-.025em b}\kern-.08em%
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}}{}
+
+\def\blfootnote{\xdef\@thefnmark{}\@footnotetext}
+\makeatother
+
+
+\setcounter{topnumber}{2}              %% 2
+\setcounter{bottomnumber}{1}           %% 1
+\setcounter{totalnumber}{3}            %% 3
+\renewcommand{\topfraction}{0.9}       %% 0.7
+\renewcommand{\bottomfraction}{0.9}    %% 0.3
+\renewcommand{\textfraction}{0.1}      %% 0.2
+\renewcommand{\floatpagefraction}{.7}  %% 0.5
+\newlength{\graphwidth}
+\setlength{\graphwidth}{0.8\columnwidth}
+
+\usepackage{subfiles}
+
+\graphicspath{{./}{./figures/}{./figures/paper/}}
+
+    
+\title{Abstract}
+\author{Pratyush Kumar, James B. Rawlings, Stephen J. Wright}
+
+\begin{document}
+
+The design of neural networks (NNs) is presented for treating large, linear
+model predictive control (MPC) applications that are out of reach with available
+quadratic programming (QP) solvers. First, we introduce a new feedforward
+network architecture that enables practitioners to obtain offset-free
+closed-loop performance with NNs. Second, we discuss the data generation
+procedure to sample the state space relevant to training the NNs based on
+anticipated online setpoint changes and plant disturbances. Third, we use the
+input-to-state stability results available in the MPC literature and establish
+robustness properties of NN controllers. Finally, we present illustrative
+simulation studies on process control examples. We apply the NN design approach
+and compare the performance with online QP based MPC on an industrial crude
+distillation unit model with 252 states, 32 control inputs, and a control-sample
+horizon length of 140. Parallel computing is used for data generation and
+graphical processing units are used for network training. All the anticipated
+plant operational scenarios with setpoints and disturbances that may change
+during operation must be sampled for NN training. After the offline design
+phase, NNs execute MPC three to five orders of magnitude faster than an
+available QP solver with less than $1\%$ loss in the closed-loop performance.
+
+\end{document}
