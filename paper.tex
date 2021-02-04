@@ -540,6 +540,8 @@ error in the NN for the NN controller to be robust to disturbances. Theorem
 \ref{thm:nnrobustness} states this allowable approximation error and specifies
 the size of disturbances for which the NN controller is robust.
 
+The related work by \cite{hertneck:kohler:trimpe:allgower:2018} examines the robustness of nonlinear systems in feedback with approximate MPC controllers. The MPC control law approximation error is treated as an input disturbance, and a robust MPC formulation based on constraint tightening procedures is used to establish the allowable approximation error. The robustness of NN controllers trained with samples of the nominal MPC control law in presence of process disturbances and state estimation errors is not established in that paper. 
+
 The problem of steering the state of the linear system (\ref{eq:ltimodel}) to
 one fixed steady state ($x_s, u_s$) is considered. For the analysis in this
 section, the state and control are transformed in deviation variables as $x := x
@@ -597,7 +599,7 @@ the disturbance sequences $\mathbf{e}$ and $\mathbf{w}$ are zero. The
 closed-loop states in this case have the bound $\norm{\phi(k; x)} \leq
 \beta(\norm{x}, k) + \alpha_n(\bar{e}_{NN})$. Any additional value of the NN
 training is to reduce the worst approximation error ($\bar{e}_{NN}$) in the
-state space of interest and thus reduce the bound on the closed-loop states. 
+state space of interest and thus reduce the bound on the closed-loop states.
 
 \section{Simulation studies} \label{sec:simulation_studies}
 
@@ -611,7 +613,9 @@ data but within the same range of values used to generate the training data,
 network design phase. Both these types of simulations shed light on 
 the interpolation and extrapolation abilities of the NNs, and are referred
 subsequently as simulations with \textit{expected} and \textit{unexpected} plant
-behaviors, respectively.
+behaviors, respectively. 
+
+The validation simulations are performed directly with the plant model for the case studies in this section. For industrial deployment, the NN training should be followed by an offline validation step of the trained network to verify the quality of the NN controller before online deployment. This validation can be performed by: a) quantifying the mean squared error (MSE) of the trained NN controller on test data generated using the optimal MPC, b) examining closed-loop performance metrics in simulations carried out with the linear model used in MPC and the optimal MPC and NN controllers. Additional probabilistic validation techniques for NNs trained using robust MPC solutions for nonlinear problems are proposed in \cite{karg:alamo:lucia:2019} and \cite{hertneck:kohler:trimpe:allgower:2018}.
 
 The closed-loop performance of the following alternative and equivalently fast
 controllers as NNs are also compared in the validation simulations: (a) steady
@@ -638,7 +642,7 @@ deployment of NNs, the following metrics are examined:
 
 \begin{itemize}
     \item Controller performance index
-    \begin{align*}        
+    \begin{align*}
     \Lambda_k = \dfrac{1}{k}\sum_{t=1}^{k} & \big(\norm{x(t) - x_{s} (t)}^2_{Q} \\
         & + \norm{u(t) - u_{s} (t)}^2_{R} + \norm{\Delta u(t)}^2_{S}\big)         
     \end{align*}
@@ -662,7 +666,7 @@ GPU that has 32 GB memory.
     \begin{tabular}{ |c|c|c|c|c|c|c|c| }
         \hline
         Controller & \thead{Neural network \\ architecture} & \thead{Number of
-        \\ Parameters} & \thead{Memory \\ footprint \\ (mB)} & \thead{Training
+        \\ Parameters} & \thead{Memory \\ footprint \\ (MB)} & \thead{Training
         \\ time \\ (min)} & \thead{\% Performance\\ losses \\
         Expected, Unexpected \\ plant behaviors} & \thead{Average \\ speedup} &
         \thead{Worst case \\ speedup} \\
@@ -767,6 +771,13 @@ performance metric after training with about $9 \times 10^4$ samples. The best
 $\%$ performance loss obtained by the NNs is summarized in Table
 \ref{table:cstrs}. 
 
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.45\textwidth, height=0.25\textheight]{cdu.pdf}
+    \caption{Schematic of the industrial crude distillation unit model.}
+    \label{fig:schematic_cdu}
+\end{figure}
+
 Second, the above trained NNs with the best performance losses are used in
 validation simulations with the setpoint and disturbance signals generated for
 the unexpected plant behavior case. The $\%$ performance losses obtained in
@@ -787,7 +798,7 @@ the deployment of NNs, and should be used to generate the training data.
 \begin{tabular}{ |c|c|c|c|c|c|c|c| }
           \hline
           Controller & \thead{Neural network \\ architecture} &
-          \thead{Number of \\ Parameters} & \thead{Memory \\ footprint \\ (mB)}
+          \thead{Number of \\ Parameters} & \thead{Memory \\ footprint \\ (MB)}
           & \thead{Training \\ time \\ (min)} & \thead{\% Performance\\ loss} &
           \thead{Average \\ speedup} & \thead{Worst case \\ speedup} \\
           \hline
@@ -824,13 +835,6 @@ the deployment of NNs, and should be used to generate the training data.
     controllers are indistinguishable.}	
     \label{fig:cdu_statistics}
 \end{figure*}
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.45\textwidth, height=0.25\textheight]{cdu.pdf}
-    \caption{Schematic of the industrial crude distillation unit model.}
-    \label{fig:schematic_cdu}
-\end{figure}
 
 Third, the transient closed-loop performance of the trained NNs is examined for
 one particular validation simulation for the expected plant behavior case.

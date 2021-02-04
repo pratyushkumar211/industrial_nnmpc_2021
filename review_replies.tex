@@ -1,0 +1,170 @@
+\documentclass[xcolor=dvipsnames, 11pt]{article}
+
+\usepackage[total={5.5in, 8in}]{geometry}
+\usepackage[utf8]{inputenc}
+
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\definecolor{blue}{HTML}{0000FF} 
+\usepackage{tikz,tikzsettings,bm}
+\usetikzlibrary{shapes,arrows,positioning, calc}
+\usepackage{almostfull}
+\usepackage{subcaption}
+
+\usepackage{physics}
+\usepackage{pgfplots}
+\usepackage{ragged2e}
+
+\usepackage{authblk}
+
+%% You should not need more than this for fancy math.
+\usepackage{verbatim}
+\usepackage{amsmath}   % Extra math commands and environments from the AMS
+\usepackage{amssymb}   % Special symbols from the AMS
+\usepackage{amsthm}    % Enhanced theorem and proof environments from the AMS
+\usepackage{algorithmic}
+\usepackage{latexsym}  % A few extra LaTeX symbols
+\usepackage{makecell}
+%\usepackage{lucidbry}
+\input{stanacce}
+\renewcommand{\baselinestretch}{1.0666}
+
+%% The URL package is handy for typesetting URLs.  It does not define % an
+%\email command because so many document styles already do that. % So we define
+%one here that uses a typewriter font.
+\usepackage{url}
+%\DeclareRobustCommand{\email}{\begingroup \urlstyle{tt}\Url}
+\providecommand{\email}{}
+\renewcommand{\email}[1]{\texttt{#1}}
+
+%% This provides various customized verbatim commands and % environments.  You
+%probably don't need it.
+\usepackage{fancyvrb}
+\DefineShortVerb{\|} \VerbatimFootnotes
+\DefineVerbatimEnvironment{code}{Verbatim}{%
+  frame=single, framesep=1em, xleftmargin=1em, xrightmargin=1em, samepage=true,
+  fontsize=\footnotesize}
+\usepackage{upquote}
+
+\newcommand{\useq}{\mathbf{u}} \newcommand{\xseq}{\mathbf{x}}
+\newcommand{\bbR}{\mathbb{R}} \newcommand{\bbU}{\mathbb{U}}
+\newcommand{\bbX}{\mathbb{X}}
+\newcommand{\reply}[1]{\textcolor{blue}{#1}}
+
+\usepackage[authoryear,round,longnamesfirst]{natbib}
+
+%% You won't normally need this definition in your documents, but it % is here
+%so we can typeset the BibTeX logo correctly.
+\makeatletter
+\@ifundefined{BibTeX} {\def\BibTeX{{\rmfamily B\kern-.05em%
+    \textsc{i\kern-.025em b}\kern-.08em%
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}}{}
+
+\def\blfootnote{\xdef\@thefnmark{}\@footnotetext}
+\makeatother
+
+
+\setcounter{topnumber}{2}              %% 2
+\setcounter{bottomnumber}{1}           %% 1
+\setcounter{totalnumber}{3}            %% 3
+\renewcommand{\topfraction}{0.9}       %% 0.7
+\renewcommand{\bottomfraction}{0.9}    %% 0.3
+\renewcommand{\textfraction}{0.1}      %% 0.2
+\renewcommand{\floatpagefraction}{.7}  %% 0.5
+\newlength{\graphwidth}
+\setlength{\graphwidth}{0.8\columnwidth}
+
+\usepackage{subfiles}
+
+\graphicspath{{./}{./figures/}{./figures/paper/}}
+
+    
+\title{Reply to Reviewers}
+\author{Pratyush Kumar, James B. Rawlings, Stephen J. Wright}
+
+\begin{document}
+
+\textbf{Reviewer 1}: The paper addresses two important open problems in neural network-based (NN) approximation of MPC problems for linear systems. These include: 1. obtaining offset-free setpoint tracking and 2. efficient data generation for offline training of NN approximations for offset-free MPC laws for large-scale systems. While the methods contribution of the paper may not be significant, the proposed methods are practical and the simulation demonstrations of the proposed ideas are very thorough and insightful. My comments are follows:
+
+\reply{The authors thank the reviewer for their helpful comments}.
+
+\begin{itemize}
+  \item The idea of generating operationally relevant training data is clearly important and useful. Others have also proposed the idea of generating closed-loop data for training the NNs, including in the context of NN for offset-free MPC. However, in the proposed approach here (Section 3.2), the idea relies on knowing process disturbances a priori (and also determining the anticipated range of setpoints). How realistic is this assumption, especially w.r.t. unknown disturbances in an industrial setting that is of interest in this paper?
+
+  \reply{Under the proposed methodology in this paper, a practitioner has to identify the large magnitude physical disturbances which can occur during the real-time operation and also the disturbance models $B_d$ and $C_d$ which describe how those disturbances affect the plant dynamics. We believe that this step is required for the control engineer to reliably characterize the operationally relevant state-space ($x, x_s, u_s$), which the neural network can encounter in an online operation. If one uses a disturbance model with hypothetical meaning for the disturbance model states, then it is unclear how the practitioner should sample the disturbances to obtain the operationally relevant state-space.}
+
+  \reply{We believe that the above step, along with determining the anticipated range of setpoints is reasonable also for industrial settings. For example in the CSTRs example presented, the practitioner has to identify the primary disturbance sources such as feed temperatures and compositions, and a model which describes how these disturbances affect the plant dynamics. An extra model identification procedure will be required to obtain the disturbance model. The anticipated range of setpoints can be determined based on historical setpoint ranges or the engineer's judgement. The setpoint and disturbance ranges can also be made conservative so the network does not encounters states outside the training data.}
+
+  \reply{We agree that the above are extra design burdens posed on the engineer compared to online optimization based MPC, however, the payoff is the ability of neural networks to do large-scale problems which may be challenging for QP solvers.}
+
+  \item  The robustness analysis of NN-based MPC controllers using ISS results has been investigated before. I would suggest that the authors cite related past work on this, e.g., Learning-based robust model predictive control with state-dependent uncertainty by Soloperto et al. and few others. Furthermore, the robustness analysis should be followed by a validation step. For example, see the latter paper or the following papers: Data-Driven Scenario Optimization for Automated Controller Tuning with Probabilistic Performance Guarantees, Probabilistic performance validation of deep learning-based robust NMPC controllers. The authors are encouraged to comment on this.
+  
+  \reply{Thank you for mentioning those papers.}
+
+  \reply{The paper ``Learning-based robust model predictive control with state-dependent uncertainty" does not analyzes the robustness of NN controllers of interest to our paper, and examines theoretical properties of robust MPC problems under state dependent uncertainties. We have added paragraph in section 4 citing a different related work from the same research group ``Learning an approximate model predictive controller with guarantees", and have highlighted the differences from our result.}
+
+  \reply{We agree that in an industrial deployment setting, the neural network training should be followed by a validation step. This validation can be performed by examining the closed-loop performance metrics of the optimal MPC and NN controllers.}
+
+  \item Why state constraints were not considered in the QP problem (5)-(7)?
+
+  \reply{In the industrial setting of interest in this paper, }
+  
+  \item While the memory footprint of the NN controllers can be very important, for example, in embedded control applications, the authors are encouraged to motivate why the memory footprint can be relevant in the industrial context considered in the paper.
+\end{itemize}
+
+\textbf{Reviewer 2}: Really nice and potentially impactful contribution; work provides clear evidence that NNs (provided that one uses a carefully chosen data representation) can effectively capture MPC laws. I have the following comments/suggestions/requests (not in order). \\
+
+\reply{The authors thank the reviewer for their helpful comments}.
+
+\begin{itemize}
+  \item the input data representation is very clever; I do agree that selecting a proper representation is the key question to answer in any application (the NN architecture is secondary). Nice contribution. 
+
+  \reply{Thank you for the comment.}
+
+  \item under the proposed architecture, now the state estimator becomes the bottleneck; please add a remark that this is an open issue and provide ideas on how this could be handled (in the future work session).
+
+  \reply{Discuss with Jim.}
+
+  \item in future work, please comment on how to potentially deal with state constraints (e.g., penalty terms?). This is an issue that might limit applicability.
+
+  \reply{Discuss with Jim.}
+
+  \item in future work, please comment on how to deal with other important aspects of MPC design; for instance, what would happen if one changes the objective from quadratic to linear? my expectation is that now the solution is degenerate and this might complicate the learning process.
+
+  \reply{Discuss with Jim.}
+
+  \item In (8), for completeness, please provide a short proof that the system delivers the state-state action if x=xs; Also, please comment if the property holds for any activation function or what properties of the activation function are needed. I think that the data representation is the key contribution of this paper; as such, it would be good to elaborate on the reasoning behind its derivation (or if there are alternative ways to obtain the same outcome).
+
+  \reply{TODO.}
+
+  \item it is not clear what is the contribution in Theorem 1; is the theorem new? is the proof new? what makes this unique to the NN setting under study? Please add more detail.
+  
+  \reply{TODO.}
+
+  \item define "lev" notation \\
+  \reply{We defined the "lev" notation in the Notation paragraph on page 2.}
+
+  \item in future work, comment on what changes could be needed to handle nonlinearities? alternative activation functions?; also, comment on how to potentially deal with time-dependent trajectories or factors that will affect performance. Of course, maybe this is not known yet, but would be good to highlight the open questions.
+
+  \reply{Discuss with Jim.}
+
+  \item so a question that I have is about actual flops saved under NN MPC (related to energy and carbon savings, which is a current criticism of machine learning); all the complexity is going now into offline training and the computations in that phase are quite intense. Could you come up with an estimate that says; look, running an MPC controller for 1 year would require O($10^x$) flops; doing the training and 1-yr execution with NN would require O($10^y$) flops.  Yes, having reduced on-line time is great, but the training computations needed are gigantic and now think about developing multiple controllers all at once; there might be lots of energy wasted there because, in training the NN, you might be anticipating states that will never be visited online.
+
+  \reply{TODO.}
+
+  \item related to the previous comment; would be good to add a short perspective on how computational hardware could change under this approach. instead of having regular CPUs for MPC, now you need clusters for training and small processors for execution. I actually think that your approach is more effective cost-wise, but an argument should be made.
+
+  \reply{Discuss with Jim.}
+
+  \item in general, I think it would be good to add a discussion on benefits of on-line MPC vs NN MPC; the on-line version is clearly more flexible in the formulations that you can use.
+
+  \item in figure 4 and 5, I would recommend comparing the controllers using cumulative frequency plots (as opposed to frequency plots); this is the common approach used in benchmarking optimization algorithms and it is easier to visualize.
+
+  \item in table 1and 2, mB should be MB. \\
+  \reply{This change is done in the updated version of the paper.}
+
+  \item I encourage the authors to share their code.
+
+\end{itemize}
+
+\end{document}
