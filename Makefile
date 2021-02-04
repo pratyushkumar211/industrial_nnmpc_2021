@@ -40,7 +40,7 @@ TEXSUFFIXES := .pdf .aux .log .bbl .blg .nav .out .snm .toc .synctex.gz \
 # we are making the article or the talk. Note that the nomenclature is kind of
 # confusing here: in the subfolders, we split paper/presentation/poster, whereas
 # these variables are article/talk/poster, so keep that in mind.
-ARTICLE_SRC := paper.tex abstract.tex coverletter.tex review_replies.tex
+ARTICLE_SRC := paper.tex
 TALK_SRC := 
 POSTER_SRC := 
 
