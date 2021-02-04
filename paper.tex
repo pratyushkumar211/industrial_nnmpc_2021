@@ -485,8 +485,9 @@ in a CPU and across multiple CPUs as well. The data generated from all the
 simulations are collected and used for the NN training.
 
 \subsection{Training}
-The following mean squared loss is minimized to determine the weights for the NN
-controller
+
+The following mean squared error (MSE) is minimized to determine the weights for
+the NN controller
 \begin{align}
     J (\theta) = \dfrac{1}{2}\sum_{j=1}^{N_{tr}} 
 [\kappa_{NN}(x_j, x_{sj}, u_{sj}; \theta) - \kappa_N(x_j, x_{sj}, u_{sj})]^2 
@@ -540,7 +541,14 @@ error in the NN for the NN controller to be robust to disturbances. Theorem
 \ref{thm:nnrobustness} states this allowable approximation error and specifies
 the size of disturbances for which the NN controller is robust.
 
-The related work by \cite{hertneck:kohler:trimpe:allgower:2018} examines the robustness of nonlinear systems in feedback with approximate MPC controllers. The MPC control law approximation error is treated as an input disturbance, and a robust MPC formulation based on constraint tightening procedures is used to establish the allowable approximation error. The robustness of NN controllers trained with samples of the nominal MPC control law in presence of process disturbances and state estimation errors is not established in that paper. 
+The related work by \cite{hertneck:kohler:trimpe:allgower:2018} examines the
+robustness of nonlinear systems in feedback with approximate MPC controllers.
+The MPC control law approximation error is treated as an input disturbance, and
+a robust MPC formulation based on constraint tightening procedures is used to
+establish the allowable approximation error. The robustness of NN controllers
+trained with samples of the nominal MPC control law in presence of process
+disturbances and state estimation errors has not been established to date in the
+literature. 
 
 The problem of steering the state of the linear system (\ref{eq:ltimodel}) to
 one fixed steady state ($x_s, u_s$) is considered. For the analysis in this
@@ -615,7 +623,16 @@ the interpolation and extrapolation abilities of the NNs, and are referred
 subsequently as simulations with \textit{expected} and \textit{unexpected} plant
 behaviors, respectively. 
 
-The validation simulations are performed directly with the plant model for the case studies in this section. For industrial deployment, the NN training should be followed by an offline validation step of the trained network to verify the quality of the NN controller before online deployment. This validation can be performed by: a) quantifying the mean squared error (MSE) of the trained NN controller on test data generated using the optimal MPC, b) examining closed-loop performance metrics in simulations carried out with the linear model used in MPC and the optimal MPC and NN controllers. Additional probabilistic validation techniques for NNs trained using robust MPC solutions for nonlinear problems are proposed in \cite{karg:alamo:lucia:2019} and \cite{hertneck:kohler:trimpe:allgower:2018}.
+The validation simulations are performed directly with the plant model for the
+case studies in this section. For industrial deployment, the NN training should
+be followed by an offline validation step of the trained network to verify the
+quality of the NN controller before online deployment. This validation can be
+performed by: a) quantifying the MSE of the trained NN controller on test data
+generated using the optimal MPC, b) examining closed-loop performance metrics in
+simulations carried out with the linear model used in MPC and the optimal MPC
+and NN controllers. Additional probabilistic validation techniques for NNs
+trained using robust MPC solutions for nonlinear problems are proposed in
+\cite{karg:alamo:lucia:2019} and \cite{hertneck:kohler:trimpe:allgower:2018}.
 
 The closed-loop performance of the following alternative and equivalently fast
 controllers as NNs are also compared in the validation simulations: (a) steady
@@ -755,21 +772,24 @@ additional scaling of $x$ and $x_s$ is performed for the NN training as $x :=
 2x_s/(x_{\textnormal{max}} - x_{\textnormal{min}})$, in which
 $x_{\textnormal{max}}$ and $x_{\textnormal{min}}$ are the maximum and minimum
 values of the state observed in the training data. This scaling is also
-performed in real time when the NN is used to compute the actuator move.
+performed in real time when the NN is used to compute the actuator move. 
 
 First, the amount of data required to obtain an accurate NN controller is
 studied. To this aim, NNs with the three chosen architectures are trained with
 incremental increases of $10^4$ training samples starting from $4 \times 10^4$
 to $1.5 \times 10^5$ samples. A batch size of 1024 samples is used in Adam, and
-all the NNs are trained for 2000 epochs. The NNs after training are used in
-validation simulations with the setpoint and disturbance signals generated for
-the expected plant behavior case. The closed-loop performance is compared with
-the optimal MPC controller and the $\%$ performance loss obtained is plotted in
-Figure \ref{fig:cstrs_statistics} (top left) as a function of the number of
-training samples. All the trained NNs provide less than $1 \%$ loss in this
-performance metric after training with about $9 \times 10^4$ samples. The best
-$\%$ performance loss obtained by the NNs is summarized in Table
-\ref{table:cstrs}. 
+all the NNs are trained for 2000 epochs. For all the NN training performed,
+10$\%$ of the training dataset is kept as a buffer dataset, which is monitored
+during training and the network weights are updated only when the MSE decreases
+on this buffer dataset after every training epoch. The NNs after
+training are used in validation simulations with the setpoint and disturbance
+signals generated for the expected plant behavior case. The closed-loop
+performance is compared with the optimal MPC controller and the $\%$ performance
+loss obtained is plotted in Figure \ref{fig:cstrs_statistics} (top left) as a
+function of the number of training samples. All the trained NNs provide less
+than $1 \%$ loss in this performance metric after training with about $9 \times
+10^4$ samples. The best $\%$ performance loss obtained by the NNs is summarized
+in Table \ref{table:cstrs}. 
 
 \begin{figure}[!h]
     \centering
@@ -897,14 +917,15 @@ $x_s$) are scaled for the NN training as in the previous example.
 Figure \ref{fig:cdu_statistics} shows the statistics for the simulation study
 performed for this example. The data requirement to obtain an accurate NN
 controller is shown in the top left. The batch size in Adam was chosen as 2048
-samples, and all the NNs are trained for 1500 epochs. The transient controller
-performance index for one validation simulation obtained with the three
-structured NNs, satK, and MPC controllers is shown in the center bottom. The top
-right plot shows the histogram of online computation times of the NNs and QP
-solver. Table \ref{table:cdu} gives a summary of the maximum time required to
-train the NNs, number of parameters in each NN, memory footprint of the NNs, and
-the $\%$ performance loss metric obtained by the structured NNs, SS, satK, and
-SH controllers in the validation simulations. 
+samples, and all the NNs are trained for 1500 epochs. For all the NN training,
+the size of the buffer dataset was chosen as 5$\%$ of the training dataset. The
+transient controller performance index for one validation simulation obtained
+with the three structured NNs, satK, and MPC controllers is shown in the center
+bottom. The top right plot shows the histogram of online computation times of
+the NNs and QP solver. Table \ref{table:cdu} gives a summary of the maximum time
+required to train the NNs, number of parameters in each NN, memory footprint of
+the NNs, and the $\%$ performance loss metric obtained by the structured NNs,
+SS, satK, and SH controllers in the validation simulations. 
 
 The offline data generation and training times for the NNs shows that this
 large-scale example is tractable with the proposed NN approach. This large
@@ -941,6 +962,12 @@ training process, the NNs are easily deployable on memory constrained hardware.
 We established conditions under which the NN controllers are robust to state
 estimation errors and process disturbances, provides some theoretical support to
 practitioners interested in the deployment of NNs. 
+
+Future research in the area of approximating MPC control laws using NNs can
+focus on developing methods for approximating the target selector QP solution,
+systematically handling state constraints, extensions to nonlinear MPC problems,
+and establishing conditions for guaranteed closed-loop stability with NN
+controllers.
 
 \section*{Acknowledgment}
 The funding for this work was provided by the industrial members of the
