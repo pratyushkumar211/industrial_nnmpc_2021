@@ -3,7 +3,7 @@ This repository contains code for the paper:
 "Industrial, large-scale model predictive control with structured neural
 networks", Pratyush Kumar, James B. Rawlings, and Stephen J. Wright
 
-current under review for a publication in Computers and Chemical Engineering.
+currently under review for a publication in Computers and Chemical Engineering.
 
 The following python scripts can be run in sequence to generate the results and
 plots. "ex" is the name of the example, either "cstrs" or "cdu".
@@ -11,11 +11,11 @@ plots. "ex" is the name of the example, either "cstrs" or "cdu".
 1. ex_parameters.py 
 2. ex_mpc.py 
 3. ex_us.py 
-4. ex_satdlqr.py 
+4. ex_satdlqr.py
 5. ex_short_horizon.py
 6. ex_offline_data.py num_parallel
 7. ex_offline_data_post_processing.py
-8. ex_train.py
+8. ex_train.py num_parallel
 9. ex_train_post_processing.py
 10. ex_neural_network.py
 11. ex_comparision_plots.py 

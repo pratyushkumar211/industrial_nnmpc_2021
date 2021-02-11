@@ -535,7 +535,10 @@ disturbance, and the existing input-to-state stability results
 \citep*{sontag:wang:1995} are used to establish the allowable approximation
 error in the NN for the NN controller to be robust to disturbances. Theorem
 \ref{thm:nnrobustness} states this allowable approximation error and specifies
-the size of disturbances for which the NN controller is robust.
+the size of disturbances for which the NN controller is robust. This result also
+holds for other approximate MPC controllers, which use different parametric
+functions to approximate the optimal control law such as polynomials and other
+piecewise affine functions.
 
 The related work by \cite{hertneck:kohler:trimpe:allgower:2018} examines the
 robustness of nonlinear systems in feedback with approximate MPC controllers.
@@ -622,7 +625,7 @@ behaviors, respectively.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth,
-                     height=0.22\textheight]{cstrs_with_flash.pdf}
+                     height=0.25\textheight]{cstrs_with_flash.pdf}
     \caption{Schematic of the CSTRs with a flash separator model.}
     \label{fig:schematic_cstrs}
 \end{figure}
@@ -706,12 +709,12 @@ NN-3-512 & [72, 512, 512, 512, 6]  & $1.42 \times 10^5$ & 1.08  & 12.77 & 0.16
 
 \begin{figure*}[!h]
     \includegraphics[page=31, width=0.5\textwidth,
-        height=0.28\textheight]{cstrs_comparision_plots.pdf} \hfill
+        height=0.27\textheight]{cstrs_comparision_plots.pdf} \hfill
         \includegraphics[page=34, width=0.5\textwidth,
-        height=0.28\textheight]{cstrs_comparision_plots.pdf} \vfill
+        height=0.27\textheight]{cstrs_comparision_plots.pdf} \vfill
     \vspace{-0.1in}
     \begin{center}\includegraphics[page=33, width=0.5\textwidth,
-        height=0.28\textheight]{cstrs_comparision_plots.pdf}
+        height=0.27\textheight]{cstrs_comparision_plots.pdf}
     \end{center}
     \vspace{-0.2in}
     \caption{Simulation statistics for the  
@@ -839,12 +842,12 @@ the deployment of NNs, and should be used to generate the training data.
 
 \begin{figure*}[!h]
     \includegraphics[page=41, width=0.5\textwidth,
-        height=0.28\textheight]{cdu_comparision_plots.pdf} \hfill
+        height=0.27\textheight]{cdu_comparision_plots.pdf} \hfill
         \includegraphics[page=43, width=0.5\textwidth,
-        height=0.28\textheight]{cdu_comparision_plots.pdf} \vfill
+        height=0.27\textheight]{cdu_comparision_plots.pdf} \vfill
     \vspace{-0.1in}
     \begin{center}\includegraphics[page=42, width=0.5\textwidth,
-        height=0.28\textheight]{cdu_comparision_plots.pdf}\end{center}
+        height=0.27\textheight]{cdu_comparision_plots.pdf}\end{center}
     \vspace{-0.2in}
     \caption{Simulation statistics for the industrial crude distillation unit
     example. Data requirement to obtain accurate NN controllers (top left),
