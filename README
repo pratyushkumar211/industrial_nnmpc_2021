@@ -1,47 +1,25 @@
-This repo is based on skeleton, which is a repo structure and Makefile written
-by Michael Risbeck <risbeck@wisc.edu>, available from Bitbucket via
+This repository contains code for the paper: 
 
-    git clone https://bitbucket.org/rawlings-group/skeleton
+"Industrial, large-scale model predictive control with structured neural
+networks", Pratyush Kumar, James B. Rawlings, and Stephen J. Wright
 
-It is basically a rewrite of the old Rawlings group makefile so that all of the
-intermediates get built in a subdirectory. This allows all the source files to
-be kept by themselves in a clean directory, and it also allows for easy rules
-in .gitignore.
+current under review for a publication in Computers and Chemical Engineering.
 
-Before running anything, you should run `make install`. This will run an install
-script (via Python) to alert you of any other repositories or custom Python
-packages that are needed for the repo.
+The following python scripts can be run in sequence to generate the results and
+plots. "ex" is the name of the example, either "cstrs" or "cdu".
 
-To facilitate sharing, we have added the ability to quickly backup the .mat
-files (which may be time-consuming to reproduce). To do this, use the make
-target "matbackups", which will ensure all .mat files are up to date and then
-save a copy of them to matbackups. The intent is that these .mat files should be
-versioned so that, in a pinch, they can be used instead of having to rebuild. By
-default, backed-up copies are always used (which requires someone initially to
-make the files and then check them in to the repo). To build the mat files every
-time instead of using the backed-up versions, either run make using
+1. ex_parameters.py 
+2. ex_mpc.py 
+3. ex_us.py 
+4. ex_satdlqr.py 
+5. ex_short_horizon.py
+6. ex_offline_data.py num_parallel
+7. ex_offline_data_post_processing.py
+8. ex_train.py
+9. ex_train_post_processing.py
+10. ex_neural_network.py
+11. ex_comparision_plots.py 
 
-    make USE_MAT_BACKUPS=False
+For the paper, the scripts were run on a computing cluster for both the examples. The structured neural network architecture is available in lib/LinearMPCLayers.py
 
-or, if you always want to use this setting, create a file "Makefile.options" in
-the base directory and add the line
-
-    USE_MAT_BACKUPS=False
-
-which will always make data files instead of using backed up copies. Note that
-this will only work if someone else has already run `make matbackups` and
-added the files to the repos. Similar functionality is available for dia files
-to solve a shape portability issue.
-
-For plots using Python and Matplotlib, I've also written a module called
-plottools that helps fix a few things and provides some convenience functions.
-By default, the python script runmatplotlib.py tries to load this package and do
-some initialization. To get this, clone
-
-    hg clone https://bitbucket.org/risbeck/plottools
-
-and follow the installation instructions there.
-
-Note that since Make uses whitespace as a delimiter, you should avoid using
-spaces in filenames throughout this repo.
-
+Please direct any questions about the code to pratyushkumar@ucsb.edu.

@@ -139,7 +139,7 @@ available QP solver with less than $1\%$ loss in the closed-loop performance.
 
 \begin{keyword}
 Model predictive control \sep machine learning \sep deep neural networks \sep
-large-scale problems
+large-scale systems \sep quadratic programming \sep inherent robustness
 \end{keyword}
 
 \end{frontmatter}
@@ -399,15 +399,17 @@ the network, $z_0$ is the input to the network, $h$ is the number of hidden
 layers, and $i \in \bbI_{1:h}$. The parameters to be optimized using training
 data are ($W_i, b_i$) and $W_{h+1}$, which are matrices of appropriate
 dimensions. At steady state, when $x=x_s$ in $z_0$, \eqref{eq:NNstruct} outputs
-$u_s$ regardless of the choice of weights as the output of all hidden layers
-($z_i$) have same subvector repeated in the upper and lower half and
-$\begin{bmatrix} W_{h + 1}, & -W_{h+ 1} \\
-      \end{bmatrix} z_h$ equals zero. The software tensorflow
-\citep{abadi:agarwal:barham:brevdo:et-al:2015} is used for NN training purposes
-in this article, and the structured architecture can be built with symbolic
-differentiation tools available in tensorflow. When a rate-of-change penalty on
-the control is included in the regulator QP, the input to the structured NN is
-modified to 
+$u_s$ regardless of the choice of weights and the activation function, as the
+output of all hidden layers ($z_i$) have same subvector repeated in the upper
+and lower half and the term $\begin{bmatrix} W_{h + 1}, & -W_{h+ 1} \\
+      \end{bmatrix} z_h$ equals zero. The NN structure \eqref{eq:NNstruct} is
+equivalent to the difference in outputs of two standard NNs with inputs ($x,
+x_s, u_s$) and ($x_s, x_s, u_s$) respectively, with $u_s$ added to the final
+output. The software tensorflow \citep{abadi:agarwal:barham:brevdo:et-al:2015}
+is used for NN training purposes in this article, and the structured
+architecture can be built with symbolic differentiation tools available in
+tensorflow. When a rate-of-change penalty on the control is included in the
+regulator QP, the input to the structured NN is modified to 
 \begin{align*}
     z_0 &= 
     \begin{bmatrix}
@@ -505,7 +507,7 @@ presented in the Section \ref{sec:simulation_studies}.
 \begin{figure*}[!h]
     \centering
 	\includegraphics[page=1, width=0.7\textwidth,
-		height=0.5\textheight]{cstrs_comparision_plots.pdf}    
+		height=0.46\textheight]{cstrs_comparision_plots.pdf}    
         \caption{Transient closed-loop actuator trajectories of the CSTRs with
         flash separator example with the NN and optimal MPC controllers. The
         performance of the NN and optimal MPC controllers are almost
@@ -516,7 +518,7 @@ presented in the Section \ref{sec:simulation_studies}.
 \begin{figure*}[!h]
     \centering
 	\includegraphics[page=2, width=0.7\textwidth,
-		height=0.5\textheight]{cstrs_comparision_plots.pdf} \caption{Transient
+		height=0.46\textheight]{cstrs_comparision_plots.pdf} \caption{Transient
 		closed-loop controlled measurement trajectories of the CSTRs with flash
 		separator example with the NN and optimal MPC controllers. The
 		performance of the NN and optimal MPC controllers are almost
@@ -540,7 +542,7 @@ robustness of nonlinear systems in feedback with approximate MPC controllers.
 The MPC control law approximation error is treated as an input disturbance, and
 a robust MPC formulation based on constraint tightening procedures is used to
 establish the allowable approximation error. The robustness of NN controllers
-trained with samples of the nominal MPC control law in presence of process
+trained with samples of nominal MPC control laws in presence of process
 disturbances and state estimation errors has not been established to date in the
 literature. 
 
@@ -617,15 +619,24 @@ interpolation and extrapolation abilities of the NNs, and are referred
 subsequently as simulations with \textit{expected} and \textit{unexpected} plant
 behaviors, respectively. 
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth,
+                     height=0.22\textheight]{cstrs_with_flash.pdf}
+    \caption{Schematic of the CSTRs with a flash separator model.}
+    \label{fig:schematic_cstrs}
+\end{figure}
+
 The validation simulations are performed directly with the plant model for the
 case studies in this section. For industrial deployment, the NN training should
 be followed by an offline validation step of the trained network to verify the
 quality of the NN controller before online deployment. This validation can be
 performed by: a) quantifying the MSE of the trained NN controller on test data
-generated using the optimal MPC, b) examining closed-loop performance metrics in
-simulations carried out with the linear model used in MPC and the optimal MPC
-and NN controllers. Additional probabilistic validation techniques for NNs
-trained using robust MPC solutions for nonlinear problems are proposed in
+generated using the optimal MPC controller, b) examining closed-loop performance
+metrics in simulations carried out with the linear model used in MPC and the
+optimal MPC and NN controllers, similar to the simulations performed in this
+section with the plant model. Additional probabilistic validation techniques for
+NNs trained using robust MPC solutions for nonlinear models are proposed in
 \cite{karg:alamo:lucia:2019} and \cite{hertneck:kohler:trimpe:allgower:2018}.
 
 The closed-loop performance of the following alternative and equivalently fast
@@ -638,14 +649,6 @@ horizon controller (SH): an MPC problem with a short control horizon is solved
 online; (d) Unstructured NN (NN-UNS): a standard feedforward network is trained
 with the triple ($x, x_s, u_s$) as the input and then used as the feedback
 controller online.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.5\textwidth,
-                     height=0.22\textheight]{cstrs_with_flash.pdf}
-    \caption{Schematic of the CSTRs with a flash separator model.}
-    \label{fig:schematic_cstrs}
-\end{figure}
 
 To gauge the performance of NNs in the validation simulations, the offline
 computational effort required to build the NNs, and the memory required for the
@@ -669,7 +672,8 @@ the average stage costs obtained at the end of the simulation period by the fast
 controllers and the MPC controller. The data generation and online timing
 comparisons are performed on a computing cluster that has several multi-core
 CPUs of clock speed 2.4GHz. The NN trainings are performed on a Tesla V100-SXM2
-GPU that has 32 GB memory.
+GPU that has 32 GB memory. The code for the simulation studies are available at:
+\url{https://github.com/pratyushkumar211/industrial_nnmpc_2021}.
 
 \begin{table*}[t]
     \caption{Summary of the simulation study for the CSTRs with a flash
@@ -720,6 +724,7 @@ NN-3-512 & [72, 512, 512, 512, 6]  & $1.42 \times 10^5$ & 1.08  & 12.77 & 0.16
 \end{figure*}
 
 \subsection{CSTRs with a flash separator}
+
 For the first example, the two stirred tank reactors in series with a flash
 separator depicted in Figure \ref{fig:schematic_cstrs} is considered as the
 plant. In both the CSTRs, a desired product $B$ is produced with the reaction $A
@@ -768,11 +773,18 @@ $x_{\textnormal{max}}$ and $x_{\textnormal{min}}$ are the maximum and minimum
 values of the state observed in the training data. This scaling is also
 performed in real time when the NN is used to compute the actuator move. 
 
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=0.45\textwidth, height=0.25\textheight]{cdu.pdf}
+    \caption{Schematic of the industrial crude distillation unit model.}
+    \label{fig:schematic_cdu}
+\end{figure}
+
 First, the amount of data required to obtain an accurate NN controller is
 studied. To this aim, NNs with the three chosen architectures are trained with
 incremental increases of $10^4$ training samples starting from $4 \times 10^4$
 to $1.5 \times 10^5$ samples. A batch size of 1024 samples is used in Adam, and
-all the NNs are trained for 2000 epochs. For all the NN training performed,
+all the NNs are trained for 2000 epochs. For all the NN trainings performed,
 10$\%$ of the training dataset is kept as a buffer dataset, which is monitored
 during training and the network weights are updated only when the MSE decreases
 on this buffer dataset after every training epoch. The NNs after training are
@@ -784,13 +796,6 @@ number of training samples. All the trained NNs provide less than $1 \%$ loss in
 this performance metric after training with about $9 \times 10^4$ samples. The
 best $\%$ performance loss obtained by the NNs is summarized in Table
 \ref{table:cstrs}. 
-
-\begin{figure}[!h]
-    \centering
-    \includegraphics[width=0.45\textwidth, height=0.25\textheight]{cdu.pdf}
-    \caption{Schematic of the industrial crude distillation unit model.}
-    \label{fig:schematic_cdu}
-\end{figure}
 
 Second, the above trained NNs with the best performance losses are used in
 validation simulations with the setpoint and disturbance signals generated for
@@ -872,15 +877,17 @@ are easily deployable in the sample time of 10 seconds.
 
 The $\%$ performance loss obtained using the four heuristic controllers, their
 corresponding speedups, maximum time required to train each NN, number of
-parameters in each NN, and the memory required to store  
-the weights of the NNs is summarized in the Table \ref{table:cstrs}. The $85 \%$
-performance loss reported for the unstructured NN corresponds to training with
-$1.5 \times 10^5$ samples and the performance is unacceptable for an industrial
-application. The noticeable performance improvement with the structured NNs is
-because the control law is exactly the same as the optimal feedback law at
-steady-states, which simplifies the optimal feedback law approximation problem
-since the training process only has to improve the NN control law for the
-transient conditions. 
+parameters in each NN, and the memory required to store the weights of the NNs
+is summarized in the Table \ref{table:cstrs}. The memory requirement shows that
+NNs are deployable on resource constrained hardware, which can be crucial for
+industrial deployment at regulatory control layers. The $85 \%$ performance loss
+reported for the unstructured NN corresponds to training with $1.5 \times 10^5$
+samples and the performance is unacceptable for an industrial application. The
+noticeable performance improvement with the structured NNs is because the
+control law is exactly the same as the optimal feedback law at steady-states,
+which simplifies the optimal feedback law approximation problem since the
+training process only has to improve the NN control law for the transient
+conditions. 
 
 \subsection{Large-scale crude distillation unit}
 
@@ -956,9 +963,18 @@ QPs for each sampled state starts to take excessive amounts of time. After the
 training process, the NNs are easily deployable on memory constrained hardware.
 We established conditions under which the NN controllers are robust to state
 estimation errors and process disturbances, provides some theoretical support to
-practitioners interested in the deployment of NNs. Future research may be
-focused to establish conditions for guaranteed closed-loop stability with NN
-controllers.
+practitioners interested in the deployment of NNs.
+
+The online QP based MPC was adopted by practitioners due to its ability to
+systematically handle multivariable systems, process constraints, improvements
+in QP solution algorithms, and has guaranteed stability properties. The
+additional computing hardware for training in large applications and sampling
+the plant operational scenarios are additional complexities required to design
+NN controllers. The advantage of NNs is their speed of MPC controller execution
+and convenience for deployment on memory constrained hardware. Future research
+may be focused to establish conditions for guaranteed closed-loop stability with
+NN controllers, systematically handling state constraints, approximating the
+target selector QP, and extensions to large, nonlinear MPC applications. 
 
 \section*{Acknowledgment}
 The funding for this work was provided by the industrial members of the
@@ -968,10 +984,6 @@ facilities purchased with funds from the National Science Foundation
 used for the simulation studies presented in this article. The CSC is supported
 by the California NanoSystems Institute and the Materials Research Science and
 Engineering Center (MRSEC; NSF DMR 1720256) at UC Santa Barbara.
-
-\section*{Source code}
-The code for the simulation studies performed in this article can be found at:
-\url{https://github.com/pratyushkumar211/industrial_nnmpc_2021}
 
 %% New version of the num-names style
 \bibliographystyle{elsarticle-num-names}

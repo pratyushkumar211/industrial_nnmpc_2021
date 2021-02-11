@@ -33,11 +33,14 @@ class RegulatorLayerWithUprev(tf.keras.layers.Layer):
 
     # The structured call function.
     # The final output is:
-    # u = [us;us;...] + K(x, uprev, xs, us) - K(xs, us, xs, us)
+    # u = us + StrucNN(x, uprev, xs, us)
+    # StrucNN := NN(x, uprev, xs, us) - NN(xs, us, xs, us)
+    # Note that the above difference is same as the structured 
+    # architecture presented in the paper.
     def call(self, inputs):
 
         # Get the inputs.
-        [x, uprev, xs, us] = inputs        
+        [x, uprev, xs, us] = inputs
 
         # Propagate through the layers.
         layer_input = tf.concat((x, uprev, xs, us), axis=-1)
@@ -81,7 +84,10 @@ class RegulatorLayerWithoutUprev(tf.keras.layers.Layer):
 
     # The structured call function.
     # The final output is:
-    # u = [us;us;...] + K(x, xs, us) - K(xs, xs, us)
+    # u = us + StrucNN(x, xs, us)
+    # StrucNN := NN(x, xs, us) - NN(xs, xs, us)
+    # Note that the above difference is same as the structured
+    # architecture presented in the paper.
     def call(self, inputs):
 
         # Get the inputs.
@@ -141,9 +147,7 @@ class UnstdRegulatorLayer(tf.keras.layers.Layer):
         for dim in layer_dims:
             self._layers.append(tf.keras.layers.Dense(dim, activation='relu'))
 
-    # The structured call function.
-    # The final output is:
-    # u = [us;us;...] + K(x, uprev, xs, us) - K(xs, us, xs, us)
+    # u = NN(x, xs, us)
     def call(self, inputs):
         # Propagate through the layers.
         output = tf.concat(inputs, axis=-1)

@@ -137,7 +137,7 @@ def plot_inputs(t, u, ulabels, ylabel_xcoordinate,
     axes[2, 0].set_xlabel("Time (hr)")
     axes[2, 1].set_xlabel("Time (hr)")
     figure.legend(labels = ('MPC', fast_controller_name), 
-                  loc = (0.31, 0.9), ncol=2)
+                  loc = (0.30, 0.9), ncol=2)
     # Return the figure,
     return [figure]
 
@@ -163,7 +163,7 @@ def plot_controlled_outputs(t, z, zsp,
     axes[2, 0].set_xlabel("Time (hr)")
     axes[2, 1].set_xlabel("Time (hr)")
     figure.legend(labels = ('MPC', fast_controller_name), 
-                  loc = (0.31, 0.9), ncol=2)
+                  loc = (0.30, 0.9), ncol=2)
     # Return
     return [figure]
 
