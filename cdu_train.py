@@ -10,7 +10,7 @@ Pratyush Kumar, pratyushkumar@ucsb.edu
 import os
 import sys
 import numpy as np
-sys.path.append('../lib/')
+sys.path.append('lib/')
 import time
 import itertools
 import tensorflow as tf

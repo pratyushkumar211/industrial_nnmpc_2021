@@ -6,7 +6,7 @@ Script to run an on-line simulation for the double integrator example
 using the approximate NN controller.
 """
 import sys
-sys.path.append('../lib/')
+sys.path.append('lib/')
 from controller_evaluation import _simulate_neural_networks
 
 # Load data and do an online simulation using the linear MPC controller.

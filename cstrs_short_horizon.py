@@ -1,6 +1,7 @@
 # [depends] cstrs_parameters.pickle
 # [depends] %LIB%/controller_evaluation.py
 # [depends] %LIB%/python_utils.py
+# [depends] cstrs_comparision_plots.py
 # [makes] pickle
 """
 Script to run an on-line simulation using the double integrator example

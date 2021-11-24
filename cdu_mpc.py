@@ -10,7 +10,7 @@ takes much time, both plotting and the simulation tasks are in
 the same script.
 """
 import sys
-sys.path.append('../lib/')
+sys.path.append('lib/')
 from python_utils import PickleTool
 from controller_evaluation import _simulate_scenarios
 

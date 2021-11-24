@@ -1,6 +1,7 @@
 # [depends] cdu_parameters.pickle
 # [depends] %LIB%/python_utils.py
 # [depends] %LIB%/controller_evaluation.py
+# [depends] cdu_comparision_plots.py
 # [makes] pickle
 """
 Script to run an on-line simulation using the double integrator example
@@ -10,7 +11,7 @@ takes much time, both plotting and the simulation tasks are in
 the same script.
 """
 import sys
-sys.path.append('../lib/')
+sys.path.append('lib/')
 import numpy as np
 from matplotlib.backends.backend_pdf import PdfPages
 from python_utils import PickleTool

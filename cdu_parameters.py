@@ -6,10 +6,8 @@
 Generate the parameters for the offline data generation and 
 the online simulation for the crude distillation unit model. 
 """
-#import custompath
-#custompath.add()
 import sys
-sys.path.append('../lib/')
+sys.path.append('lib/')
 import matio
 import scipy.linalg
 import numpy as np

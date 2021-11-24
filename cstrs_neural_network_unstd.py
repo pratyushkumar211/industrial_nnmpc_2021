@@ -1,13 +1,14 @@
 # [depends] cstrs_parameters.pickle cstrs_train_unstd.pickle
 # [depends] %LIB%/controller_evaluation.py
 # [depends] %LIB%/python_utils.py
+# [depends] cstrs_comparision_plots.py
 # [makes] pickle
 """
 Script to run an on-line simulation for the 
 CSTRs with flash example using the approximate NN controller.
 """
 import sys
-sys.path.append('../lib/')
+sys.path.append('lib/')
 from python_utils import (PickleTool, figure_size_a4)
 from matplotlib.backends.backend_pdf import PdfPages
 from cstrs_comparision_plots import _cstrs_cl_comparision_plots

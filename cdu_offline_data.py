@@ -5,7 +5,7 @@
 Script to generate offline data for training the neural net.
 """
 import sys
-sys.path.append('../lib/')
+sys.path.append('lib/')
 from python_utils import PickleTool
 
 # Load data and do an online simulation using the linear MPC controller.
