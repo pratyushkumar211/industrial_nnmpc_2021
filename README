@@ -1,7 +1,8 @@
 This repository contains code for the paper: 
 
 "Industrial, large-scale model predictive control with structured neural
-networks", Pratyush Kumar, James B. Rawlings, and Stephen J. Wright
+networks" 
+Pratyush Kumar, James B. Rawlings, and Stephen J. Wright
 
 published in Computers and Chemical Engineering, 2021.
 
@@ -20,6 +21,12 @@ plots. "ex" is the name of the example, either "cstrs" or "cdu".
 10. ex_neural_network.py
 11. ex_comparision_plots.py 
 
-For the paper, the scripts were run on a computing cluster for both the examples. The structured neural network architecture is available in lib/LinearMPCLayers.py
+For the simulations presented in the paper, the scripts were run on a computing
+cluster for both the CSTRs and crude distillation unit examples. The structured
+neural network architecture is available in lib/LinearMPCLayers.py. The call
+function in the classes "RegulatorLayerWithUprev" and
+"RegulatorLayerWithoutUprev" shows how to smybolically make predictions with the
+structured architecture.
 
-Please direct any questions about the code to pratyushkumar@ucsb.edu.
+Please feel free to correspond to the author with any questions about the code
+and the work at pratyushkumar@ucsb.edu or pratyushkumar211@gmail.com
