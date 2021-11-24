@@ -1,4 +1,0 @@
-This folder is, as they say, "where the magic happens." All of the intermediate
-files produced during the build process go here. This is so that the source
-files are kept in a completely separate folder, and so we can easily tell
-mercurial to ignore all of the intermediate files with a single wildcard.
