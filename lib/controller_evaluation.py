@@ -5,7 +5,6 @@ Author: Pratyush Kumar, pratyushkumar@ucsb.edu
 """
 import time
 import sys
-import plottools
 import cvxopt as cvx
 import numpy as np 
 import scipy
@@ -214,12 +213,6 @@ def plot_cl_performance_and_comp_times(time,
         figures += [figure_cl, figure_ct]
     # Return the figure.
     return figures
-
-def _set_font_size(*, paper_fontsize):
-    """ Set the fond size depending upon the 
-    document. """
-    if plottools.isPaper():
-        plt.rcParams.update({'font.size': paper_fontsize})
 
 def plot_nn_vs_num_samples_performance(performance_loss,
                                     num_samples, legend_labels,

@@ -15,7 +15,6 @@ the same script.
 # custompath.add()
 import sys
 sys.path.append('lib/')
-import plottools
 import numpy as np
 import itertools
 import matplotlib.pyplot as plt
@@ -25,7 +24,7 @@ from python_utils import (PickleTool, figure_size_cl,
 from matplotlib.backends.backend_pdf import PdfPages
 from controller_evaluation import (plot_cl_performance_and_comp_times,
                                    plot_nn_vs_num_samples_performance,
-                                   _load_data_for_plots, _set_font_size,
+                                   _load_data_for_plots,
                                    _get_best_nn_plant_controllers)
 
 def _get_cdu_data_for_plotting(plant, controller, setpoints,
@@ -262,9 +261,6 @@ def plot_average_stage_costs(t, ell,
 
 def main():
     """ Run these commands when this script is called."""
-
-    # Set the fontize.
-    _set_font_size(paper_fontsize=16)
 
     # Get the parameters and the plant object which has the closed-loop data
     # for the two controllers.
